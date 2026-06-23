@@ -2,6 +2,7 @@ import { useState } from 'react'
 import MirrorConfigurator from './MirrorConfigurator'
 import { Hero, Gallery, Testimonials } from './LandingSections'
 import SplashScreen from './SplashScreen'
+import Footer from './Footer'
 
 function App() {
   const [splashDone, setSplashDone] = useState(false)
@@ -18,6 +19,7 @@ function App() {
       <div id="configurator" className="border-t border-black/10">
         <MirrorConfigurator />
       </div>
+      <Footer />
     </div>
   )
 }

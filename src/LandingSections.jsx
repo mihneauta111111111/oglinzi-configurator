@@ -1,7 +1,11 @@
+import gallery1 from './assets/gallery1.jpg'
+import gallery2 from './assets/gallery2.jpg'
+import gallery3 from './assets/gallery3.jpg'
+
 const EXAMPLES = [
-  { username: 'andreea.beauty', caption: 'Salonul tau, in propria oglinda', likes: '3.2K', hex: '#FF7AAE' },
-  { username: 'cafe.luna', caption: 'O cafenea care merita pozata', likes: '8.7K', hex: '#FFC98A' },
-  { username: 'fitstudio.ro', caption: 'Antrenamentul perfect incepe aici', likes: '5.1K', hex: '#CFE3FF' },
+  { username: 'beauty.salon', caption: 'Salonul perfect, oglindit in stil', likes: '2.2K', img: gallery1 },
+  { username: 'rooftop.event', caption: 'Noaptea e mai frumoasa cu halo', likes: '5.1K', img: gallery2 },
+  { username: 'studio.foto', caption: 'Fiecare cadru spune o poveste', likes: '3.8K', img: gallery3 },
 ]
 
 const TESTIMONIALS = [
@@ -12,11 +16,29 @@ const TESTIMONIALS = [
 
 export function Hero() {
   return (
-    <section className="max-w-6xl mx-auto px-6 pt-16 pb-10 text-center">
-      <p className="text-[12px] uppercase tracking-wide text-[#E4633E] font-medium mb-3">halo.mirrors</p>
-      <h1 className="font-display text-4xl sm:text-5xl font-medium leading-tight max-w-2xl mx-auto">Oglinda care spune povestea ta, nu doar reflexia ta</h1>
-      <p className="text-black/60 max-w-md mx-auto mt-4 text-[15px]">Configurezi marimea, materialul, culoarea LED si fiecare detaliu al postarii. Tu alegi, noi construim.</p>
-      <a href="#configurator" className="inline-block mt-7 bg-[#211D1A] text-white rounded-lg px-6 py-3 text-[14px] font-medium hover:bg-black transition-colors">Configureaza-ti oglinda</a>
+    <section className="relative w-full h-screen overflow-hidden">
+      <iframe
+        src="https://www.youtube.com/embed/hzcKQXSaZYU?autoplay=1&mute=1&loop=1&playlist=hzcKQXSaZYU&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&iv_load_policy=3"
+        className="absolute"
+        style={{
+          border: 'none',
+          pointerEvents: 'none',
+          width: '100vw',
+          height: '56.25vw',
+          minHeight: '100vh',
+          minWidth: '177.77vh',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        allow="autoplay; encrypted-media"
+        allowFullScreen
+      />
+      <div className="relative z-10 flex flex-col items-center justify-end h-full text-center px-6 pb-16">
+        <h1 className="font-display text-xl sm:text-2xl font-medium leading-tight max-w-lg text-white mb-2">Oglinda care spune povestea ta, nu doar reflexia ta</h1>
+        <p className="text-white/60 max-w-xs mx-auto text-[12px] mb-5">Tu alegi marimea, materialul, culoarea LED. Noi construim.</p>
+        <a href="#configurator" className="inline-block bg-white text-[#211D1A] rounded-lg px-6 py-2.5 text-[12px] font-medium hover:bg-[#FFC98A] transition-colors mb-4">Configureaza-ti oglinda</a>
+      </div>
     </section>
   )
 }
@@ -29,13 +51,12 @@ export function Gallery() {
       <div className="grid sm:grid-cols-3 gap-6">
         {EXAMPLES.map((ex) => (
           <div key={ex.username} className="flex justify-center">
-            <div className="w-44 rounded-[24px] bg-white overflow-hidden" style={{ boxShadow: '0 0 30px 4px ' + ex.hex + '60, 0 16px 28px -10px rgba(0,0,0,0.15)' }}>
+            <div className="w-64 rounded-[24px] bg-white overflow-hidden" style={{ boxShadow: '0 0 30px 4px ' + ex.hex + '60, 0 16px 28px -10px rgba(0,0,0,0.15)' }}>
               <div className="px-3 pt-2.5 pb-2 flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full bg-black/10 flex-shrink-0" />
                 <span className="text-[11px] font-semibold truncate">{ex.username}</span>
               </div>
-              <div className="aspect-[4/5] mx-2 rounded-md" style={{ background: 'linear-gradient(135deg, #E9E5DA 0%, #F6F3EC 45%, #DEDACE 100%)' }} />
-              <div className="px-3 py-2 text-[10px] text-black/70">{ex.likes} like-uri</div>
+              <img src={ex.img} alt={ex.username} className="aspect-[4/5] mx-2 rounded-md object-cover w-full" />              <div className="px-3 py-2 text-[10px] text-black/70">{ex.likes} like-uri</div>
               <div className="px-3 pb-3 text-[10px] text-black/70 leading-snug">{ex.caption}</div>
             </div>
           </div>
