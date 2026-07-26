@@ -1,10 +1,109 @@
-@import "tailwindcss";@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600&family=Inter:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600&family=Inter:wght@400;500&display=swap');
 @import "tailwindcss";
 
 body {
   font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: #9B7BFF;
+  color: #fff;
 }
 
 .font-display {
   font-family: 'Bricolage Grotesque', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Signature: the LED spectrum as a light-line and as text */
+.spectrum-line {
+  height: 2px;
+  background: linear-gradient(90deg, #FFC98A, #FF6FA5, #9B7BFF, #BFD8FF);
+}
+
+.spectrum-text {
+  background: linear-gradient(90deg, #FFC98A, #FF6FA5, #9B7BFF, #BFD8FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.cta-glow {
+  transition: box-shadow 0.35s ease, transform 0.2s ease;
+}
+.cta-glow:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 10px 30px -6px rgba(155, 123, 255, 0.55), 0 6px 18px -8px rgba(255, 111, 165, 0.5);
+  transform: translateY(-1px);
+}
+.cta-glow:active {
+  transform: translateY(0) scale(0.985);
+}
+
+/* Premium hover lift for cards */
+.lift {
+  transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.2, 1), box-shadow 0.35s ease;
+}
+.lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 24px 44px -20px rgba(23, 24, 26, 0.3);
+}
+
+/* Softer, on-brand focus for text fields */
+input,
+textarea,
+select {
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(155, 123, 255, 0.15);
+}
+
+:focus-visible {
+  outline: 2px solid #9B7BFF;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+@media (max-width: 640px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 40px !important;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+section[id] {
+  scroll-margin-top: 84px;
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.7s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
 }

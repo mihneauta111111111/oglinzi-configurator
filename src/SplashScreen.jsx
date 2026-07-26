@@ -8,6 +8,7 @@ export default function SplashScreen({ onDone }) {
     const t2 = setTimeout(() => setPhase('fadeout'), 2200)
     const t3 = setTimeout(() => onDone(), 3000)
     return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- timers must run once on mount, not restart if onDone's identity changes
   }, [])
 
   return (

@@ -1,25 +1,30 @@
-import { useState } from 'react'
-import MirrorConfigurator from './MirrorConfigurator'
-import { Hero, Gallery, Testimonials } from './LandingSections'
-import SplashScreen from './SplashScreen'
+import { useEffect } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
+import Navbar from './Navbar'
 import Footer from './Footer'
+import HomePage from './HomePage'
+import CartPage from './CartPage'
+import { StickyCta } from './LandingSections'
 
 function App() {
-  const [splashDone, setSplashDone] = useState(false)
+  const location = useLocation()
+  const isHome = location.pathname === '/'
+
+  // Reset scroll position when switching between pages
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [location.pathname])
 
   return (
-    <div className="min-h-screen bg-[#FAF6EF] text-[#211D1A]">
-      {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
-      <header className="px-6 py-5 border-b border-black/10">
-        <span className="font-display text-lg font-medium">halo.mirrors</span>
-      </header>
-      <Hero />
-      <Gallery />
-      <Testimonials />
-      <div id="configurator" className="border-t border-black/10">
-        <MirrorConfigurator />
-      </div>
+    <div className="min-h-screen bg-[#ECEEF0] text-[#17181A]">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/cos" element={<CartPage />} />
+      </Routes>
       <Footer />
+      {isHome && <div className="md:hidden" style={{ height: '66px', background: '#17181A' }} />}
+      {isHome && <StickyCta />}
     </div>
   )
 }
