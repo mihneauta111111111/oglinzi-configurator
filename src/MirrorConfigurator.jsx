@@ -41,9 +41,11 @@ const BABY_SIZE_LABEL = '26 x 15 cm'
 
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#FFC98A' },
-  { id: 'cool', name: 'Alb rece', hex: '#BFD8FF' },
-  { id: 'pink', name: 'Roz', hex: '#FF6FA5' },
-  { id: 'purple', name: 'Mov', hex: '#9B7BFF' },
+  { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 30 },
+  { id: 'red', name: 'Rosu', hex: '#FF3B3B' },
+  { id: 'blue', name: 'Albastru', hex: '#3B82F6' },
+  { id: 'uv', name: 'UV light', hex: '#8A2BE2' },
+  { id: 'none', name: 'Fara iluminare', hex: '' },
 ]
 
 function Toggle({ checked, onChange, label }) {
@@ -79,7 +81,7 @@ function MirrorConfigurator() {
   const [comments, setComments] = useState('348')
   const [reposts, setReposts] = useState('92')
   const [shares, setShares] = useState('1.2K')
-  const [caption, setCaption] = useState('Configureaza-ti propria oglinda, cu reflectia ta si stilul tau')
+  const [caption, setCaption] = useState('Configureaza-ti propria oglinda, cu reflexia ta si stilul tau')
   const [hashtags, setHashtags] = useState('#halomirrors #oglindapersonalizata')
   const [showCustomize, setShowCustomize] = useState(false)
   const [added, setAdded] = useState(false)
@@ -92,7 +94,7 @@ function MirrorConfigurator() {
   const selectedStand = STAND_OPTIONS.find((s) => s.id === stand)
   const selectedLed = LED_COLORS.find((c) => c.id === led)
   const isBaby = model === 'baby'
-  const totalPrice = isBaby ? BABY_PRICE : PRICES[material][stand][size]
+  const totalPrice = (isBaby ? BABY_PRICE : PRICES[material][stand][size]) + (selectedLed.extra || 0)
   const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
   const modelName = isBaby ? 'baby.halo' : 'halo'
 
@@ -125,12 +127,12 @@ function MirrorConfigurator() {
   return (
     <div style={{ position: 'relative', overflow: 'hidden' }}>
       {/* Signature: the room lights up in the LED color you pick */}
-      <div aria-hidden style={{ position: 'absolute', top: '6%', left: '50%', transform: 'translateX(-50%)', width: '82%', height: '68%', background: `radial-gradient(ellipse at center, ${selectedLed.hex}4d, ${selectedLed.hex}1f 42%, rgba(0,0,0,0) 70%)`, filter: 'blur(34px)', pointerEvents: 'none', transition: 'background 0.5s ease' }} />
+      <div aria-hidden style={{ position: 'absolute', top: '6%', left: '50%', transform: 'translateX(-50%)', width: '82%', height: '68%', background: selectedLed.hex ? `radial-gradient(ellipse at center, ${selectedLed.hex}4d, ${selectedLed.hex}1f 42%, rgba(0,0,0,0) 70%)` : 'transparent', filter: 'blur(34px)', pointerEvents: 'none', transition: 'background 0.5s ease' }} />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16 grid lg:grid-cols-[1fr_420px] gap-10">
       <div className="flex flex-col items-center lg:sticky lg:top-24 lg:self-start pt-6 gap-6 lg:gap-10">
         <div className="relative" style={{ width: 'min(360px, 100%)', zoom: isBaby ? 0.7 : 1 }}>
           {/* LED backlight bleeding from behind the mirror */}
-          <div style={{ position: 'absolute', inset: '-30px', borderRadius: '72px', filter: 'blur(46px)', opacity: 0.5, backgroundColor: selectedLed.hex, transition: 'background-color 0.5s ease' }} />
+          <div style={{ position: 'absolute', inset: '-30px', borderRadius: '72px', filter: 'blur(46px)', opacity: 0.5, backgroundColor: selectedLed.hex || 'transparent', transition: 'background-color 0.5s ease' }} />
 
           {/* Mirror body: the reusable Instagram-post card */}
           <MirrorPreview
@@ -234,13 +236,29 @@ function MirrorConfigurator() {
           <div className="flex items-center justify-between gap-4 flex-wrap">
             <div className="flex gap-3">
               {LED_COLORS.map((c) => (
-                <button key={c.id} type="button" title={c.name} onClick={() => setLed(c.id)} className={'w-9 h-9 rounded-full ring-2 transition-transform ' + (led === c.id ? 'ring-black scale-110' : 'ring-transparent')} style={{ backgroundColor: c.hex }} />
+                <button
+                  key={c.id}
+                  type="button"
+                  title={c.name + (c.extra ? ` (+${c.extra} RON)` : '')}
+                  onClick={() => setLed(c.id)}
+                  className={'relative w-9 h-9 rounded-full ring-2 transition-transform overflow-hidden ' + (led === c.id ? 'ring-black scale-110' : 'ring-transparent')}
+                  style={{ background: c.swatch || c.hex || '#fff', border: c.hex ? 'none' : '1px solid rgba(0,0,0,0.15)' }}
+                >
+                  {!c.hex && (
+                    <svg viewBox="0 0 24 24" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+                      <line x1="4" y1="20" x2="20" y2="4" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
+                    </svg>
+                  )}
+                </button>
               ))}
             </div>
             <div className="flex items-center gap-5">
               <Toggle checked={verified} onChange={setVerified} label="Verificat" />
               <Toggle checked={dark} onChange={setDark} label="Fundal negru" />
             </div>
+          </div>
+          <div className="text-[11px] text-black/45 mt-2">
+            {selectedLed.name}{selectedLed.extra ? ` · +${selectedLed.extra} RON` : ''}
           </div>
         </div>
 

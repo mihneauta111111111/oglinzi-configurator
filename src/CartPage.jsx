@@ -9,7 +9,7 @@ const THUMB_SCALE = THUMB_W / DESIGN_W
 
 function Thumb({ item }) {
   return (
-    <div style={{ position: 'relative', width: THUMB_W + 'px', height: '104px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, background: item.dark ? '#000' : '#fff', boxShadow: `0 0 0 1px rgba(0,0,0,0.06), 0 8px 18px -8px ${item.ledHex}cc` }}>
+    <div style={{ position: 'relative', width: THUMB_W + 'px', height: '104px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, background: item.dark ? '#000' : '#fff', boxShadow: `0 0 0 1px rgba(0,0,0,0.06)${item.ledHex ? `, 0 8px 18px -8px ${item.ledHex}cc` : ''}` }}>
       <div style={{ position: 'absolute', top: 0, left: 0, width: DESIGN_W + 'px', transform: `scale(${THUMB_SCALE})`, transformOrigin: 'top left' }}>
         <MirrorPreview {...item} ledHex={item.ledHex} />
       </div>
@@ -108,7 +108,7 @@ export default function CartPage() {
                   <div className="font-medium text-[15px]">{item.modelName || 'Oglinda personalizata'}</div>
                   <div className="text-[13px] text-black/50 mt-1">{[item.materialName, item.sizeLabel, item.standLabel].filter(Boolean).join(' · ')}</div>
                   <div className="flex items-center gap-1.5 text-[13px] text-black/60 mt-1.5">
-                    <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex, display: 'inline-block' }} />
+                    <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex || '#fff', border: item.ledHex ? 'none' : '1px solid rgba(0,0,0,0.2)', display: 'inline-block' }} />
                     LED {item.ledName}{item.dark ? ' · fundal negru' : ''}
                   </div>
                 </div>

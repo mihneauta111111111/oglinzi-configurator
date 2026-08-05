@@ -56,8 +56,10 @@ export default function MirrorPreview({
   const avatarBg = dark ? '#262626' : '#efefef'
   const avatarText = dark ? '#dddddd' : '#333333'
 
+  const glow = ledHex ? '0 0 44px 2px ' + ledHex + '55, ' : ''
+
   return (
-    <div style={{ position: 'relative', width: '100%', background: postBg, borderRadius: '44px', overflow: 'hidden', border: postBodyBorder, boxShadow: '0 0 44px 2px ' + ledHex + '55, 0 30px 55px -20px rgba(0,0,0,0.5)', transition: 'background 0.35s ease' }}>
+    <div style={{ position: 'relative', width: '100%', background: postBg, borderRadius: '44px', overflow: 'hidden', border: postBodyBorder, boxShadow: glow + '0 30px 55px -20px rgba(0,0,0,0.5)', transition: 'background 0.35s ease' }}>
       {/* Post header (avatar + username + menu) */}
       <div style={{ padding: '16px 18px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '11px', minWidth: 0 }}>
@@ -77,7 +79,7 @@ export default function MirrorPreview({
       {/* Mirror surface (the real reflective glass) */}
       <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1.16', background: 'linear-gradient(158deg, #cfe1f0 0%, #eef5fb 46%, #b9cee1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(118deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%)' }} />
-        <span style={{ position: 'relative', fontSize: '11px', letterSpacing: '0.16em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase' }}>reflectia ta</span>
+        <span style={{ position: 'relative', fontSize: '11px', letterSpacing: '0.16em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase' }}>reflexia ta</span>
       </div>
 
       {/* Action bar: four inline stats + saved */}
