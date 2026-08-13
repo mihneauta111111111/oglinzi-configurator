@@ -1,7 +1,19 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { LEGAL_LINKS } from './legalRoutes'
 
 export default function Footer() {
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  function goConfigure() {
+    if (location.pathname !== '/') {
+      navigate('/')
+      setTimeout(() => document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 80)
+    } else {
+      document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+  }
+
   return (
     <footer style={{ backgroundColor: '#17181A', color: '#fff' }}>
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #FFC98A, #FF6FA5, #9B7BFF, #BFD8FF)' }} />
@@ -11,7 +23,7 @@ export default function Footer() {
             <p style={{ fontSize: '11px', letterSpacing: '0.15em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '16px', fontWeight: 500 }}>halo.mirrors</p>
             <h2 className="font-display" style={{ fontSize: '28px', fontWeight: 500, lineHeight: 1.3, maxWidth: '320px' }}>Mirrors · Light · Design</h2>
             <p style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)', marginTop: '16px', lineHeight: 1.7, maxWidth: '300px' }}>Oglinzi personalizate din sticla si plexi, cu banda LED si grafica Instagram configurabila.</p>
-            <a href="#configurator" className="cta-glow" style={{ display: 'inline-block', marginTop: '28px', backgroundColor: '#fff', color: '#17181A', padding: '12px 24px', fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, textDecoration: 'none', borderRadius: '999px' }}>Configureaza acum</a>
+            <button type="button" onClick={goConfigure} className="cta-glow" style={{ display: 'inline-block', marginTop: '28px', backgroundColor: '#fff', color: '#17181A', padding: '12px 24px', fontSize: '12px', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600, textDecoration: 'none', borderRadius: '999px', border: 'none', cursor: 'pointer' }}>Configureaza acum</button>
           </div>
 
           <div>
