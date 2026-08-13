@@ -1,5 +1,7 @@
+import { Link } from 'react-router-dom'
+import { LEGAL_LINKS } from './legalRoutes'
+
 export default function Footer() {
-  const legal = ['Termeni si conditii', 'Politica de confidentialitate', 'Politica cookie', 'Politica de retur']
   return (
     <footer style={{ backgroundColor: '#17181A', color: '#fff' }}>
       <div style={{ height: '2px', background: 'linear-gradient(90deg, #FFC98A, #FF6FA5, #9B7BFF, #BFD8FF)' }} />
@@ -31,8 +33,8 @@ export default function Footer() {
 
         {/* Legal + trust row (required before enabling online payments) */}
         <div style={{ borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: '28px', marginBottom: '20px', display: 'flex', flexWrap: 'wrap', gap: '10px 22px' }}>
-          {legal.map((l) => (
-            <a key={l} href="#" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>{l}</a>
+          {LEGAL_LINKS.map(({ label, path }) => (
+            <Link key={path} to={path} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>{label}</Link>
           ))}
           <a href="https://anpc.ro" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>ANPC</a>
           <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>Solutionare online (SOL)</a>
