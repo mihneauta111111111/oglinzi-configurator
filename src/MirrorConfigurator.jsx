@@ -63,6 +63,8 @@ const LED_COLORS = [
   { id: 'none', name: 'Fara iluminare', hex: '' },
 ]
 
+const NO_LED = LED_COLORS.find((c) => c.id === 'none')
+
 function Toggle({ checked, onChange, label }) {
   return (
     <button
@@ -107,10 +109,11 @@ function MirrorConfigurator() {
   const selectedMaterial = MATERIALS.find((m) => m.id === material)
   const selectedSize = SIZES.find((s) => s.id === size)
   const selectedStand = STAND_OPTIONS.find((s) => s.id === stand)
-  const selectedLed = LED_COLORS.find((c) => c.id === led)
   const isBaby = model === 'baby'
+  // baby.halo has no LED strip at all - ignore whatever color was picked earlier
+  const selectedLed = isBaby ? NO_LED : LED_COLORS.find((c) => c.id === led)
   const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
-  const totalPrice = (isBaby ? BABY_PRICE : activePrices[material][stand][size]) + (selectedLed.extra || 0)
+  const totalPrice = (isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0))
   const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
   const modelName = isBaby ? 'baby.halo' : 'halo'
 
@@ -175,7 +178,7 @@ function MirrorConfigurator() {
             <div className="spectrum-line" style={{ width: '32px', marginBottom: '14px' }} />
             <p className="font-display text-[15px] font-medium mb-3">Comanda ta, fara griji</p>
             <ul className="space-y-2.5">
-              {['Oglinda personalizata din sticla sau plexi', 'Banda LED cu alimentare la priza', 'Kit de prindere si ambalaj protejat'].map((t) => (
+              {(isBaby ? ['Oglinda personalizata din sticla, 26 x 15 cm', 'Fara banda LED'] : ['Oglinda personalizata din sticla sau plexi', 'Banda LED cu alimentare la priza']).concat('Kit de prindere si ambalaj protejat').map((t) => (
                 <li key={t} className="flex items-start gap-2.5 text-[13px] text-black/65 leading-snug">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B7BFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M5 12.5l4.5 4.5L19 7" /></svg>
                   {t}
@@ -248,34 +251,38 @@ function MirrorConfigurator() {
         )}
 
         <div>
-          <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Culoare LED</div>
-          <div className="flex items-center justify-between gap-4 flex-wrap">
-            <div className="flex gap-3">
-              {LED_COLORS.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  title={c.name + (c.extra ? ` (+${c.extra} RON)` : '')}
-                  onClick={() => setLed(c.id)}
-                  className={'relative w-9 h-9 rounded-full ring-2 transition-transform overflow-hidden ' + (led === c.id ? 'ring-black scale-110' : 'ring-transparent')}
-                  style={{ background: c.swatch || c.hex || '#fff', border: '1px solid rgba(0,0,0,0.15)' }}
-                >
-                  {!c.hex && (
-                    <svg viewBox="0 0 24 24" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
-                      <line x1="4" y1="20" x2="20" y2="4" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
-                    </svg>
-                  )}
-                </button>
-              ))}
-            </div>
+          <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">{isBaby ? 'Stil postare' : 'Culoare LED'}</div>
+          <div className={'flex items-center gap-4 flex-wrap' + (isBaby ? '' : ' justify-between')}>
+            {!isBaby && (
+              <div className="flex gap-3">
+                {LED_COLORS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    title={c.name + (c.extra ? ` (+${c.extra} RON)` : '')}
+                    onClick={() => setLed(c.id)}
+                    className={'relative w-9 h-9 rounded-full ring-2 transition-transform overflow-hidden ' + (led === c.id ? 'ring-black scale-110' : 'ring-transparent')}
+                    style={{ background: c.swatch || c.hex || '#fff', border: '1px solid rgba(0,0,0,0.15)' }}
+                  >
+                    {!c.hex && (
+                      <svg viewBox="0 0 24 24" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
+                        <line x1="4" y1="20" x2="20" y2="4" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="flex items-center gap-5">
               <Toggle checked={verified} onChange={setVerified} label="Verificat" />
               <Toggle checked={dark} onChange={setDark} label="Fundal negru" />
             </div>
           </div>
-          <div className="text-[11px] text-black/45 mt-2">
-            {selectedLed.name}{selectedLed.extra ? ` · +${selectedLed.extra} RON` : ''}
-          </div>
+          {!isBaby && (
+            <div className="text-[11px] text-black/45 mt-2">
+              {selectedLed.name}{selectedLed.extra ? ` · +${selectedLed.extra} RON` : ''}
+            </div>
+          )}
         </div>
 
         {/* Optional post details - collapsed so the core flow stays short */}
