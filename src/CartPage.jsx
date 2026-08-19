@@ -108,7 +108,7 @@ export default function CartPage() {
                   <div className="font-medium text-[15px]">{item.modelName || 'Oglinda personalizata'}</div>
                   <div className="text-[13px] text-black/50 mt-1">{[item.materialName, item.sizeLabel, item.standLabel].filter(Boolean).join(' · ')}</div>
                   <div className="flex items-center gap-1.5 text-[13px] text-black/60 mt-1.5">
-                    <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex || '#fff', border: item.ledHex ? 'none' : '1px solid rgba(0,0,0,0.2)', display: 'inline-block' }} />
+                    <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex || '#fff', border: '1px solid rgba(0,0,0,0.15)', display: 'inline-block' }} />
                     LED {item.ledName}{item.dark ? ' · fundal negru' : ''}
                   </div>
                 </div>

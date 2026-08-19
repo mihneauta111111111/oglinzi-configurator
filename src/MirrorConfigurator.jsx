@@ -30,6 +30,20 @@ const PRICES = {
   },
 }
 
+// Preturi separate pentru varianta fara banda LED (fara costul benzii),
+// TVA 21% inclus. Plexi + suport foloseste acelasi pret ca sticla + suport,
+// la fel ca in tabelul PRICES de mai sus.
+const PRICES_NO_LED = {
+  sticla: {
+    no: { S: 871, M: 937, L: 997 },
+    yes: { S: 1027, M: 1089, L: 1271 },
+  },
+  plexi: {
+    no: { S: 816, M: 876, L: 937 },
+    yes: { S: 1027, M: 1089, L: 1271 },
+  },
+}
+
 const MODELS = [
   { id: 'halo', name: 'halo', dim: 'Marime mare, pe perete' },
   { id: 'baby', name: 'baby.halo', dim: '26 x 15 cm, de birou' },
@@ -41,6 +55,7 @@ const BABY_SIZE_LABEL = '26 x 15 cm'
 
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#FFC98A' },
+  { id: 'white', name: 'Alb', hex: '#F2F6FF' },
   { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 30 },
   { id: 'red', name: 'Rosu', hex: '#FF3B3B' },
   { id: 'blue', name: 'Albastru', hex: '#3B82F6' },
@@ -94,7 +109,8 @@ function MirrorConfigurator() {
   const selectedStand = STAND_OPTIONS.find((s) => s.id === stand)
   const selectedLed = LED_COLORS.find((c) => c.id === led)
   const isBaby = model === 'baby'
-  const totalPrice = (isBaby ? BABY_PRICE : PRICES[material][stand][size]) + (selectedLed.extra || 0)
+  const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
+  const totalPrice = (isBaby ? BABY_PRICE : activePrices[material][stand][size]) + (selectedLed.extra || 0)
   const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
   const modelName = isBaby ? 'baby.halo' : 'halo'
 
@@ -224,7 +240,7 @@ function MirrorConfigurator() {
               {SIZES.map((s) => (
                 <button key={s.id} type="button" onClick={() => setSize(s.id)} className={'rounded-xl border px-3 py-2.5 text-left transition-colors ' + (size === s.id ? 'border-[#17181A] bg-[#17181A]/5' : 'border-black/10 hover:border-black/25')}>
                   <div className="text-[12px] font-medium">{s.label}</div>
-                  <div className="text-[11px] text-black/45 mt-0.5">{PRICES[material][stand][s.id]} RON</div>
+                  <div className="text-[11px] text-black/45 mt-0.5">{activePrices[material][stand][s.id]} RON</div>
                 </button>
               ))}
             </div>
@@ -242,7 +258,7 @@ function MirrorConfigurator() {
                   title={c.name + (c.extra ? ` (+${c.extra} RON)` : '')}
                   onClick={() => setLed(c.id)}
                   className={'relative w-9 h-9 rounded-full ring-2 transition-transform overflow-hidden ' + (led === c.id ? 'ring-black scale-110' : 'ring-transparent')}
-                  style={{ background: c.swatch || c.hex || '#fff', border: c.hex ? 'none' : '1px solid rgba(0,0,0,0.15)' }}
+                  style={{ background: c.swatch || c.hex || '#fff', border: '1px solid rgba(0,0,0,0.15)' }}
                 >
                   {!c.hex && (
                     <svg viewBox="0 0 24 24" width="100%" height="100%" style={{ position: 'absolute', inset: 0 }}>
@@ -286,6 +302,7 @@ function MirrorConfigurator() {
                   )}
                   <input type="file" accept="image/*" onChange={handleAvatar} style={{ display: 'none' }} />
                 </div>
+                <p style={{ fontSize: '10.5px', color: 'rgba(0,0,0,0.4)', marginTop: '5px' }}>Poza iese mai clara daca nu folosesti o captura de ecran (screenshot).</p>
               </label>
               <div className="grid grid-cols-2 gap-2">
                 <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" className="rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
