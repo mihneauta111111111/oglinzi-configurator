@@ -103,6 +103,7 @@ function MirrorConfigurator() {
   const [hashtags, setHashtags] = useState('#halomirrors #oglindapersonalizata')
   const [showCustomize, setShowCustomize] = useState(false)
   const [added, setAdded] = useState(false)
+  const [exclVat, setExclVat] = useState(false)
 
   const { addItem } = useCart()
   const navigate = useNavigate()
@@ -115,6 +116,9 @@ function MirrorConfigurator() {
   const selectedLed = isBaby ? NO_LED : LED_COLORS.find((c) => c.id === led)
   const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
   const totalPrice = (isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0))
+  // Cart/checkout always uses totalPrice (TVA inclus, ce se plateste efectiv);
+  // toggle-ul de mai jos e doar pentru afisare, sa compare clientul preturile.
+  const displayPrice = exclVat ? Math.round(totalPrice / 1.21) : totalPrice
   const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
   const modelName = isBaby ? 'baby.halo' : 'halo'
 
@@ -244,7 +248,7 @@ function MirrorConfigurator() {
               {SIZES.map((s) => (
                 <button key={s.id} type="button" onClick={() => setSize(s.id)} className={'rounded-xl border px-3 py-2.5 text-left transition-colors ' + (size === s.id ? 'border-[#17181A] bg-[#17181A]/5' : 'border-black/10 hover:border-black/25')}>
                   <div className="text-[12px] font-medium">{s.label}</div>
-                  <div className="text-[11px] text-black/45 mt-0.5">{activePrices[material][stand][s.id]} RON</div>
+                  <div className="text-[11px] text-black/45 mt-0.5">{exclVat ? Math.round(activePrices[material][stand][s.id] / 1.21) : activePrices[material][stand][s.id]} RON</div>
                 </button>
               ))}
             </div>
@@ -331,9 +335,15 @@ function MirrorConfigurator() {
         <div className="pt-5 border-t border-black/10">
           <div className="flex items-baseline justify-between mb-1">
             <span className="text-[13px] text-black/55">Pret</span>
-            <span className="font-display text-3xl font-medium">{totalPrice} RON</span>
+            <span className="font-display text-3xl font-medium">{displayPrice} RON</span>
           </div>
-          <p className="text-[11px] text-black/40 text-right mb-4">TVA inclus</p>
+          <div className="flex items-center justify-end gap-2 mb-4">
+            <span className="text-[11px] text-black/40">{exclVat ? 'Pret fara TVA' : 'TVA inclus'}</span>
+            <div className="inline-flex items-center rounded-full border border-black/12 p-0.5 text-[10.5px] font-medium">
+              <button type="button" onClick={() => setExclVat(false)} className={'rounded-full px-2.5 py-1 transition-colors ' + (!exclVat ? 'bg-[#17181A] text-white' : 'text-black/45')}>Cu TVA</button>
+              <button type="button" onClick={() => setExclVat(true)} className={'rounded-full px-2.5 py-1 transition-colors ' + (exclVat ? 'bg-[#17181A] text-white' : 'text-black/45')}>Fara TVA</button>
+            </div>
+          </div>
           <button type="button" onClick={handleAddToCart} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium">
             {added ? 'Adaugat · vezi cosul' : 'Adauga in cos'}
           </button>
