@@ -33,7 +33,7 @@ const TESTIMONIALS = [
 const FAQ = [
   { q: 'Cat dureaza pana primesc oglinda?', a: 'In general 5-10 zile lucratoare de la confirmarea comenzii, in functie de configuratie si de perioada.' },
   { q: 'Pot pune propria poza si username?', a: 'Da. Configuratorul iti arata in timp real cum va arata oglinda ta, cu poza, username, bifa de verificat si statistici.' },
-  { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+30 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
+  { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+36 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
   { q: 'Livrati in toata tara?', a: 'Da, livram oriunde in Romania. Costul exact de livrare se confirma odata cu oferta.' },
   { q: 'Cum se monteaza?', a: 'Vine gata de agatat pe perete, iar optional poti alege stander. Se conecteaza simplu la priza.' },
 ]

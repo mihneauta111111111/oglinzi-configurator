@@ -19,14 +19,15 @@ const STAND_OPTIONS = [
   { id: 'yes', label: 'Cu stander' },
 ]
 
+// TVA 21% inclus
 const PRICES = {
   sticla: {
-    no: { S: 845, M: 899, L: 949 },
-    yes: { S: 999, M: 1050, L: 1200 },
+    no: { S: 1022, M: 1088, L: 1148 },
+    yes: { S: 1209, M: 1271, L: 1452 },
   },
   plexi: {
-    no: { S: 799, M: 849, L: 899 },
-    yes: { S: 999, M: 1050, L: 1200 },
+    no: { S: 967, M: 1027, L: 1088 },
+    yes: { S: 1209, M: 1271, L: 1452 },
   },
 }
 
@@ -49,14 +50,14 @@ const MODELS = [
   { id: 'baby', name: 'baby.halo', dim: '26 x 15 cm, de birou' },
 ]
 
-// baby.halo: doar sticla, dimensiune fixa, pret unic
-const BABY_PRICE = 125
+// baby.halo: doar sticla, dimensiune fixa, pret unic - TVA 21% inclus
+const BABY_PRICE = 151
 const BABY_SIZE_LABEL = '26 x 15 cm'
 
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#FFC98A' },
   { id: 'white', name: 'Alb', hex: '#F2F6FF' },
-  { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 30 },
+  { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 36 },
   { id: 'red', name: 'Rosu', hex: '#FF3B3B' },
   { id: 'blue', name: 'Albastru', hex: '#3B82F6' },
   { id: 'uv', name: 'UV light', hex: '#8A2BE2' },
@@ -328,10 +329,11 @@ function MirrorConfigurator() {
         </div>
 
         <div className="pt-5 border-t border-black/10">
-          <div className="flex items-baseline justify-between mb-4">
+          <div className="flex items-baseline justify-between mb-1">
             <span className="text-[13px] text-black/55">Pret</span>
             <span className="font-display text-3xl font-medium">{totalPrice} RON</span>
           </div>
+          <p className="text-[11px] text-black/40 text-right mb-4">TVA inclus</p>
           <button type="button" onClick={handleAddToCart} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium">
             {added ? 'Adaugat · vezi cosul' : 'Adauga in cos'}
           </button>

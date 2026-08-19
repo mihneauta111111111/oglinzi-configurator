@@ -138,6 +138,7 @@ export default function CartPage() {
             <span className="text-[14px] font-medium">Total</span>
             <span className="font-display text-2xl font-medium">{total} <span className="text-[13px] text-black/45 font-sans">RON</span></span>
           </div>
+          <p className="text-[11px] text-black/40 text-right mt-0.5">TVA inclus</p>
 
           <p className="text-[11px] uppercase tracking-[0.12em] text-black/40 font-medium mt-7 mb-3">Date de livrare</p>
           <form onSubmit={handleSubmit} className="space-y-2">
