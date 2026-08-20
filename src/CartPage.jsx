@@ -31,9 +31,13 @@ function QtyStepper({ qty, onDec, onInc }) {
 export default function CartPage() {
   const { items, removeItem, updateQty, clear, total, count } = useCart()
   const navigate = useNavigate()
-  const [form, setForm] = useState({ name: '', phone: '', email: '', address: '', city: '', postcode: '' })
+  const [form, setForm] = useState({
+    customerType: 'pf', name: '', phone: '', email: '', address: '', city: '', postcode: '',
+    companyName: '', cui: '', regCom: '',
+  })
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
+  const [paymentInfo, setPaymentInfo] = useState(null)
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const goConfigure = () => { navigate('/'); setTimeout(() => document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth' }), 80) }
@@ -50,10 +54,13 @@ export default function CartPage() {
         body: JSON.stringify({ ...form, total, items }),
       })
       if (response.ok) {
+        const result = await response.json()
         clear()
+        setPaymentInfo(result)
         setSent(true)
       } else {
-        alert('A aparut o eroare. Incearca din nou.')
+        const error = await response.json().catch(() => null)
+        alert(error?.message || 'A aparut o eroare. Incearca din nou.')
       }
     } catch (err) {
       console.error('Eroare detaliata:', err)
@@ -69,7 +76,12 @@ export default function CartPage() {
         <div className="spectrum-line mx-auto" style={{ width: '44px', marginBottom: '22px' }} />
         <h1 className="font-display text-3xl font-medium mb-3">Comanda a fost trimisa</h1>
         <p className="text-[#17181A]/60 text-[15px] mb-8">Te contactam in cel mult 24h pentru confirmare si detalii de livrare.</p>
-        <button onClick={() => navigate('/')} className="cta-glow inline-block bg-[#17181A] text-white rounded-full px-7 py-3.5 text-[14px] font-medium">Inapoi la site</button>
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <button onClick={() => navigate('/')} className="cta-glow inline-block bg-[#17181A] text-white rounded-full px-7 py-3.5 text-[14px] font-medium">Inapoi la site</button>
+          {paymentInfo?.payment_available && paymentInfo?.payment_url && (
+            <a href={paymentInfo.payment_url} className="cta-glow inline-block border border-[#17181A]/15 text-[#17181A] rounded-full px-7 py-3.5 text-[14px] font-medium">Plateste online acum</a>
+          )}
+        </div>
       </div>
     )
   }
@@ -141,8 +153,29 @@ export default function CartPage() {
           <p className="text-[11px] text-black/40 text-right mt-0.5">TVA inclus</p>
 
           <p className="text-[11px] uppercase tracking-[0.12em] text-black/40 font-medium mt-7 mb-3">Date de livrare</p>
+          <div className="inline-flex rounded-full border border-black/12 p-0.5 mb-2.5">
+            {[['pf', 'Persoana fizica'], ['pj', 'Firma']].map(([val, label]) => (
+              <button
+                key={val}
+                type="button"
+                onClick={() => setForm((f) => ({ ...f, customerType: val }))}
+                className={'px-4 py-1.5 rounded-full text-[12px] font-medium transition-colors ' + (form.customerType === val ? 'bg-[#17181A] text-white' : 'text-black/50')}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
           <form onSubmit={handleSubmit} className="space-y-2">
-            <input value={form.name} onChange={set('name')} placeholder="numele tau" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            {form.customerType === 'pj' && (
+              <>
+                <input value={form.companyName} onChange={set('companyName')} placeholder="denumire firma" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                <div className="grid grid-cols-2 gap-2">
+                  <input value={form.cui} onChange={set('cui')} placeholder="CUI" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                  <input value={form.regCom} onChange={set('regCom')} placeholder="nr. Reg. Com." required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                </div>
+              </>
+            )}
+            <input value={form.name} onChange={set('name')} placeholder={form.customerType === 'pj' ? 'persoana de contact' : 'numele tau'} required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <input type="tel" value={form.phone} onChange={set('phone')} placeholder="telefon" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <input type="email" value={form.email} onChange={set('email')} placeholder="email" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <input value={form.address} onChange={set('address')} placeholder="adresa (strada, numar)" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
