@@ -5,7 +5,6 @@ import { useCart } from './CartContext'
 const NAV_LINKS = [
   { label: 'Galerie', id: 'galerie' },
   { label: 'Cum functioneaza', id: 'proces' },
-  { label: 'Recenzii', id: 'recenzii' },
   { label: 'Intrebari', id: 'faq' },
 ]
 
@@ -17,13 +16,13 @@ const SEARCH_INDEX = [
   { label: 'Culoare LED', tag: 'Configurator', id: 'configurator' },
   { label: 'Galerie / creatii recente', tag: 'Galerie', id: 'galerie' },
   { label: 'Cum functioneaza', tag: 'Proces', id: 'proces' },
-  { label: 'Recenzii clienti', tag: 'Recenzii', id: 'recenzii' },
   { label: 'Intrebari frecvente', tag: 'FAQ', id: 'faq' },
   { label: 'Livrare in toata tara', tag: 'FAQ', id: 'faq' },
   { label: 'Timp de productie', tag: 'FAQ', id: 'faq' },
-  { label: 'beauty.salon', tag: 'Exemplu', id: 'galerie' },
-  { label: 'rooftop.event', tag: 'Exemplu', id: 'galerie' },
-  { label: 'studio.foto', tag: 'Exemplu', id: 'galerie' },
+  { label: 'halo.mirrors', tag: 'Exemplu', id: 'galerie' },
+  { label: 'rheearoses', tag: 'Exemplu', id: 'galerie' },
+  { label: 'domeniulterraqua', tag: 'Exemplu', id: 'galerie' },
+  { label: 'primegraduateevents', tag: 'Exemplu', id: 'galerie' },
 ]
 
 function SearchIcon({ color }) {

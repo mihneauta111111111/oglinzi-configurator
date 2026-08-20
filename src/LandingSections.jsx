@@ -26,18 +26,13 @@ const STEPS = [
   { title: 'Livrare', text: 'O primesti acasa, gata de agatat pe perete si de pus in priza.', hue: '#BFD8FF' },
 ]
 
-const TESTIMONIALS = [
-  { quote: 'Oglinda a ajuns exact cum am configurat-o, calitate premium.', name: 'Andreea M.', city: 'Bucuresti' },
-  { quote: 'Clientii mei se opresc mereu sa faca poze cu ea.', name: 'Mihai R.', city: 'Cluj' },
-  { quote: 'Cel mai bun decor pentru salonul meu, recomand cu toata increderea.', name: 'Larisa D.', city: 'Iasi' },
-]
-
 const FAQ = [
   { q: 'Cat dureaza pana primesc oglinda?', a: 'In general 5-10 zile lucratoare de la confirmarea comenzii, in functie de configuratie si de perioada.' },
   { q: 'Pot pune propria poza si username?', a: 'Da. Configuratorul iti arata in timp real cum va arata oglinda ta, cu poza, username, bifa de verificat si statistici.' },
   { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+36 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
   { q: 'Livrati in toata tara?', a: 'Da, livram oriunde in Romania. Costul exact de livrare se confirma odata cu oferta.' },
-  { q: 'Cum se monteaza?', a: 'Vine gata de agatat pe perete, iar optional poti alege stander. Se conecteaza simplu la priza.' },
+  { q: 'Cum se monteaza oglinda pe perete?', a: 'Oglinda este livrata cu un sistem de prindere simplu, care se fixeaza pe perete cu suruburi, iar produsul se monteaza prin glisare.' },
+  { q: 'Iti doresti un design special?', a: 'Pentru un model cu o altfel de personalizare, contacteaza-ne pe Instagram sau TikTok la @halo.mirrors ori pe WhatsApp la 0728 085 494.' },
 ]
 
 function Eyebrow({ children, tone = 'dark', center = true }) {
@@ -186,27 +181,6 @@ export function Process() {
             ))}
           </div>
         </div>
-      </div>
-    </section>
-  )
-}
-
-export function Testimonials() {
-  return (
-    <section id="recenzii" className="max-w-6xl mx-auto px-6 py-16">
-      <Reveal className="text-center mb-10">
-        <Eyebrow>Recenzii</Eyebrow>
-        <h2 className="font-display text-3xl sm:text-4xl font-medium mb-2">Ce spun clientii</h2>
-        <p className="text-[#17181A]/55 text-[14px]">Inlocuieste cu recenzii reale inainte de lansare</p>
-      </Reveal>
-      <div className="grid sm:grid-cols-3 gap-6">
-        {TESTIMONIALS.map((t, i) => (
-          <Reveal key={t.name} delay={i * 90} className="lift rounded-2xl border border-[#17181A]/10 p-6 bg-white">
-            <div style={{ color: '#FFC98A', fontSize: '16px', marginBottom: '12px', letterSpacing: '2px' }}>{'★★★★★'}</div>
-            <p className="text-[14px] leading-relaxed mb-4">{t.quote}</p>
-            <p className="text-[12px] text-[#17181A]/55">{t.name} - {t.city}</p>
-          </Reveal>
-        ))}
       </div>
     </section>
   )

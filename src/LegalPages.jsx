@@ -1,7 +1,6 @@
 // Legal pages (terms, privacy, cookies, returns), standard for a made-to-order
 // personalized product sold online in Romania/EU. Company identity fields are
-// placeholders (bracketed) until the client supplies real registration data -
-// same "clearly marked TODO" convention as the Testimonials placeholder.
+// placeholders (bracketed) until the client supplies real registration data.
 const COMPANY = {
   name: '[Denumire firma SRL]',
   cui: '[CUI]',

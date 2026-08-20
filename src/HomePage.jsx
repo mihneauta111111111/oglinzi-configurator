@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import MirrorConfigurator from './MirrorConfigurator'
-import { Hero, TrustStrip, Benefits, Gallery, Process, Testimonials, Faq } from './LandingSections'
+import { Hero, TrustStrip, Benefits, Gallery, Process, Faq } from './LandingSections'
 import Reveal from './Reveal'
 import SplashScreen from './SplashScreen'
 
@@ -32,7 +32,6 @@ export default function HomePage() {
           </div>
           <MirrorConfigurator />
         </section>
-        <Testimonials />
         <Faq />
       </main>
     </>
