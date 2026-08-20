@@ -1,13 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 import Reveal from './Reveal'
-import gallery1 from './assets/gallery1.jpg'
-import gallery2 from './assets/gallery2.jpg'
-import gallery3 from './assets/gallery3.jpg'
+import galleryTattoo from './assets/gallery-tattoo.jpg'
+import galleryFlori from './assets/gallery-flori.jpg'
+import galleryEveniment from './assets/gallery-eveniment.jpg'
+import galleryHaloLed from './assets/gallery-halo-led.jpg'
+import galleryResort from './assets/gallery-resort.jpg'
 
 const EXAMPLES = [
-  { username: 'beauty.salon', caption: 'Salonul perfect, oglindit in stil', likes: '2.2K', img: gallery1 },
-  { username: 'rooftop.event', caption: 'Noaptea e mai frumoasa cu halo', likes: '5.1K', img: gallery2 },
-  { username: 'studio.foto', caption: 'Fiecare cadru spune o poveste', likes: '3.8K', img: gallery3 },
+  { username: 'halo.mirrors', caption: 'Oglinda care atrage priviri si creeaza continut pentru brandul tau.', likes: '111K', img: galleryHaloLed },
+  { username: 'rheearoses', caption: 'Din 2020 va facem iubitele fericite.', likes: '555K', img: galleryFlori },
+  { username: 'domeniulterraqua', caption: 'Locul unde-ti dai Restart.', likes: '77.7K', img: galleryResort },
+  { username: 'primegraduateevents', caption: 'Look good. Feel good. Graduate.', likes: '88K', img: galleryEveniment },
+  { username: 'cre23tin', caption: 'Look closer... you are the art.', likes: '17.6K', img: galleryTattoo },
 ]
 
 const SPECS = [
@@ -134,9 +138,9 @@ export function Gallery() {
       <Reveal className="text-center mb-10">
         <Eyebrow>Galerie</Eyebrow>
         <h2 className="font-display text-3xl sm:text-4xl font-medium mb-2">Creatii recente</h2>
-        <p className="text-[#17181A]/55 text-[14px]">Exemple placeholder, inlocuieste cu poze reale</p>
+        <p className="text-[#17181A]/55 text-[14px]">Oglinzi halo.mirrors, la clienti reali</p>
       </Reveal>
-      <div className="grid sm:grid-cols-3 gap-6">
+      <div className="flex flex-wrap justify-center gap-6">
         {EXAMPLES.map((ex, i) => (
           <Reveal key={ex.username} delay={i * 90} className="flex justify-center">
             <div className="group lift w-64 rounded-[24px] bg-white overflow-hidden shadow-[0_16px_30px_-16px_rgba(23,24,26,0.22)]">
