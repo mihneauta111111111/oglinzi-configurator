@@ -1,0 +1,170 @@
+[
+  {
+    "cod": "alba",
+    "nume": "Alba"
+  },
+  {
+    "cod": "arad",
+    "nume": "Arad"
+  },
+  {
+    "cod": "arges",
+    "nume": "Argeş"
+  },
+  {
+    "cod": "bacau",
+    "nume": "Bacău"
+  },
+  {
+    "cod": "bihor",
+    "nume": "Bihor"
+  },
+  {
+    "cod": "bistrita-nasaud",
+    "nume": "Bistriţa-Năsăud"
+  },
+  {
+    "cod": "botosani",
+    "nume": "Botoşani"
+  },
+  {
+    "cod": "brasov",
+    "nume": "Braşov"
+  },
+  {
+    "cod": "braila",
+    "nume": "Brăila"
+  },
+  {
+    "cod": "bucuresti",
+    "nume": "Bucureşti"
+  },
+  {
+    "cod": "buzau",
+    "nume": "Buzău"
+  },
+  {
+    "cod": "caras-severin",
+    "nume": "Caraş-Severin"
+  },
+  {
+    "cod": "calarasi",
+    "nume": "Călăraşi"
+  },
+  {
+    "cod": "cluj",
+    "nume": "Cluj"
+  },
+  {
+    "cod": "constanta",
+    "nume": "Constanţa"
+  },
+  {
+    "cod": "covasna",
+    "nume": "Covasna"
+  },
+  {
+    "cod": "dambovita",
+    "nume": "Dâmboviţa"
+  },
+  {
+    "cod": "dolj",
+    "nume": "Dolj"
+  },
+  {
+    "cod": "galati",
+    "nume": "Galaţi"
+  },
+  {
+    "cod": "giurgiu",
+    "nume": "Giurgiu"
+  },
+  {
+    "cod": "gorj",
+    "nume": "Gorj"
+  },
+  {
+    "cod": "harghita",
+    "nume": "Harghita"
+  },
+  {
+    "cod": "hunedoara",
+    "nume": "Hunedoara"
+  },
+  {
+    "cod": "ialomita",
+    "nume": "Ialomiţa"
+  },
+  {
+    "cod": "iasi",
+    "nume": "Iaşi"
+  },
+  {
+    "cod": "ilfov",
+    "nume": "Ilfov"
+  },
+  {
+    "cod": "maramures",
+    "nume": "Maramureş"
+  },
+  {
+    "cod": "mehedinti",
+    "nume": "Mehedinţi"
+  },
+  {
+    "cod": "mures",
+    "nume": "Mureş"
+  },
+  {
+    "cod": "neamt",
+    "nume": "Neamţ"
+  },
+  {
+    "cod": "olt",
+    "nume": "Olt"
+  },
+  {
+    "cod": "prahova",
+    "nume": "Prahova"
+  },
+  {
+    "cod": "satu-mare",
+    "nume": "Satu Mare"
+  },
+  {
+    "cod": "salaj",
+    "nume": "Sălaj"
+  },
+  {
+    "cod": "sibiu",
+    "nume": "Sibiu"
+  },
+  {
+    "cod": "suceava",
+    "nume": "Suceava"
+  },
+  {
+    "cod": "teleorman",
+    "nume": "Teleorman"
+  },
+  {
+    "cod": "timis",
+    "nume": "Timiş"
+  },
+  {
+    "cod": "tulcea",
+    "nume": "Tulcea"
+  },
+  {
+    "cod": "vaslui",
+    "nume": "Vaslui"
+  },
+  {
+    "cod": "valcea",
+    "nume": "Vâlcea"
+  },
+  {
+    "cod": "vrancea",
+    "nume": "Vrancea"
+  }
+]

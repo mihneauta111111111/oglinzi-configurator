@@ -17,6 +17,10 @@ dist-ssr
 .env.local
 .env.production
 
+# Raw SIRUTA source (~1MB), only needed to re-run scripts/build-localities.mjs
+# - the generated src/data/*.json output is what's actually committed/used.
+scripts/siruta_raw.xlsx
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

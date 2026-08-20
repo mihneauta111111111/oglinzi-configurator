@@ -1,7 +1,13 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useCart } from './CartContext'
 import MirrorPreview from './MirrorPreview'
+import SearchableSelect from './SearchableSelect'
+import { getCartShippingTotal } from './shipping'
+import judeteData from './data/judete.json'
+
+const JUDETE_OPTIONS = judeteData.map((j) => ({ value: j.cod, label: j.nume }))
+const localitatiModules = import.meta.glob('./data/localitati/*.json')
 
 const THUMB_W = 84
 const DESIGN_W = 360
@@ -32,15 +38,41 @@ export default function CartPage() {
   const { items, removeItem, updateQty, clear, total, count } = useCart()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    customerType: 'pf', name: '', phone: '', email: '', address: '', city: '', postcode: '',
+    customerType: 'pf', lastName: '', firstName: '', phone: '', email: '', address: '',
+    judet: '', localitate: '', postcode: '',
     companyName: '', cui: '', regCom: '',
   })
+  const [localitatiOptions, setLocalitatiOptions] = useState([])
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
   const [paymentInfo, setPaymentInfo] = useState(null)
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const goConfigure = () => { navigate('/'); setTimeout(() => document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth' }), 80) }
+
+  const selectedJudetLabel = JUDETE_OPTIONS.find((j) => j.value === form.judet)?.label || ''
+
+  function handleJudetChange(cod) {
+    setForm((f) => ({ ...f, judet: cod, localitate: '' }))
+    setLocalitatiOptions([])
+  }
+
+  // Localitatile depind de judetul ales - incarcate doar cand e nevoie
+  // (import.meta.glob lazy), nu toata tara dintr-o data.
+  useEffect(() => {
+    if (!form.judet) return
+    let cancelled = false
+    const loader = localitatiModules[`./data/localitati/${form.judet}.json`]
+    if (!loader) return
+    loader().then((mod) => {
+      if (cancelled) return
+      setLocalitatiOptions(mod.default.map((nume) => ({ value: nume, label: nume })))
+    })
+    return () => { cancelled = true }
+  }, [form.judet])
+
+  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet), [items, form.judet])
+  const grandTotal = total + (shippingCost || 0)
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -51,7 +83,14 @@ export default function CartPage() {
       const response = await fetch(apiUrl + '/wp-json/halo/v1/request-quote', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, total, items }),
+        body: JSON.stringify({
+          ...form,
+          judetNume: selectedJudetLabel,
+          subtotal: total,
+          shippingCost: shippingCost || 0,
+          total: grandTotal,
+          items,
+        }),
       })
       if (response.ok) {
         const result = await response.json()
@@ -144,11 +183,14 @@ export default function CartPage() {
           <div className="spectrum-line" style={{ width: '32px', marginBottom: '18px' }} />
           <div className="space-y-2.5 text-[13.5px]">
             <div className="flex justify-between"><span className="text-black/55">Subtotal</span><span className="font-medium">{total} RON</span></div>
-            <div className="flex justify-between"><span className="text-black/55">Livrare</span><span className="text-black/55">se confirma</span></div>
+            <div className="flex justify-between">
+              <span className="text-black/55">Livrare</span>
+              <span className={form.judet ? 'font-medium' : 'text-black/40'}>{form.judet ? `${shippingCost} RON` : 'selecteaza judetul'}</span>
+            </div>
           </div>
           <div className="border-t border-black/10 mt-4 pt-4 flex items-baseline justify-between">
             <span className="text-[14px] font-medium">Total</span>
-            <span className="font-display text-2xl font-medium">{total} <span className="text-[13px] text-black/45 font-sans">RON</span></span>
+            <span className="font-display text-2xl font-medium">{grandTotal} <span className="text-[13px] text-black/45 font-sans">RON</span></span>
           </div>
           <p className="text-[11px] text-black/40 text-right mt-0.5">TVA inclus</p>
 
@@ -175,14 +217,34 @@ export default function CartPage() {
                 </div>
               </>
             )}
-            <input value={form.name} onChange={set('name')} placeholder={form.customerType === 'pj' ? 'persoana de contact' : 'numele tau'} required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            <div className="grid grid-cols-2 gap-2">
+              <input value={form.lastName} onChange={set('lastName')} placeholder="nume" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+              <input value={form.firstName} onChange={set('firstName')} placeholder="prenume" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </div>
+            {form.customerType === 'pj' && (
+              <p className="text-[10.5px] text-black/40 -mt-1">Persoana de contact pentru livrare</p>
+            )}
             <input type="tel" value={form.phone} onChange={set('phone')} placeholder="telefon" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <input type="email" value={form.email} onChange={set('email')} placeholder="email" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-            <input value={form.address} onChange={set('address')} placeholder="adresa (strada, numar)" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <div className="grid grid-cols-2 gap-2">
-              <input value={form.city} onChange={set('city')} placeholder="oras" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-              <input value={form.postcode} onChange={set('postcode')} placeholder="cod postal" className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+              <SearchableSelect
+                value={form.judet}
+                onChange={handleJudetChange}
+                options={JUDETE_OPTIONS}
+                placeholder="judet"
+                required
+              />
+              <SearchableSelect
+                value={form.localitate}
+                onChange={(val) => setForm((f) => ({ ...f, localitate: val }))}
+                options={localitatiOptions}
+                placeholder={form.judet ? 'localitate' : 'alege intai judetul'}
+                disabled={!form.judet}
+                required
+              />
             </div>
+            <input value={form.address} onChange={set('address')} placeholder="adresa (strada, numar)" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            <input value={form.postcode} onChange={set('postcode')} placeholder="cod postal" className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <button type="submit" disabled={sending} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium disabled:opacity-60 mt-1">
               {sending ? 'Se trimite...' : 'Trimite comanda'}
             </button>
