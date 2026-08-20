@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import Reveal from './Reveal'
-import galleryTattoo from './assets/gallery-tattoo.jpg'
 import galleryFlori from './assets/gallery-flori.jpg'
 import galleryEveniment from './assets/gallery-eveniment.jpg'
 import galleryHaloLed from './assets/gallery-halo-led.jpg'
@@ -11,7 +10,6 @@ const EXAMPLES = [
   { username: 'rheearoses', caption: 'Din 2020 va facem iubitele fericite.', likes: '555K', img: galleryFlori },
   { username: 'domeniulterraqua', caption: 'Locul unde-ti dai Restart.', likes: '77.7K', img: galleryResort },
   { username: 'primegraduateevents', caption: 'Look good. Feel good. Graduate.', likes: '88K', img: galleryEveniment },
-  { username: 'cre23tin', caption: 'Look closer... you are the art.', likes: '17.6K', img: galleryTattoo },
 ]
 
 const SPECS = [
