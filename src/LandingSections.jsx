@@ -27,6 +27,7 @@ const STEPS = [
 ]
 
 const FAQ = [
+  { q: 'De ce HALO nu e doar o oglinda?', a: 'Pentru ca brandul tau merita mai mult decat un perete gol. Cel mai bun marketing este atunci cand clientii iti promoveaza afacerea din proprie initiativa.' },
   { q: 'Cat dureaza pana primesc oglinda?', a: 'In general 5-10 zile lucratoare de la confirmarea comenzii, in functie de configuratie si de perioada.' },
   { q: 'Pot pune propria poza si username?', a: 'Da. Configuratorul iti arata in timp real cum va arata oglinda ta, cu poza, username, bifa de verificat si statistici.' },
   { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+36 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
