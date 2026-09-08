@@ -33,6 +33,8 @@ const BABY_SHIPPING_FEES = { 1: 5, 2: 8, 3: 14, 4: 20 }
 // size/stand/isBaby brute (doar etichetele afisate) - default rezonabil in
 // loc sa pice pagina cuiva care avea deja ceva in cos.
 export function getShippingFeeForItem(item, judetCod) {
+  if (item.isTest) return 0
+
   const tier = JUDET_TIERS[judetCod]
   if (!tier) return 0
 
