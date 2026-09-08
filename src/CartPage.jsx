@@ -45,7 +45,6 @@ export default function CartPage() {
   const [localitatiOptions, setLocalitatiOptions] = useState([])
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
-  const [paymentInfo, setPaymentInfo] = useState(null)
 
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }))
   const goConfigure = () => { navigate('/'); setTimeout(() => document.getElementById('configurator')?.scrollIntoView({ behavior: 'smooth' }), 80) }
@@ -95,7 +94,12 @@ export default function CartPage() {
       if (response.ok) {
         const result = await response.json()
         clear()
-        setPaymentInfo(result)
+        // Plata e obligatorie cand e disponibila - trimite direct la EuPlatesc,
+        // fara ecran intermediar de unde s-ar putea intoarce pe site fara sa plateasca.
+        if (result.payment_available && result.payment_url) {
+          window.location.href = result.payment_url
+          return
+        }
         setSent(true)
       } else {
         const error = await response.json().catch(() => null)
@@ -115,12 +119,7 @@ export default function CartPage() {
         <div className="spectrum-line mx-auto" style={{ width: '44px', marginBottom: '22px' }} />
         <h1 className="font-display text-3xl font-medium mb-3">Comanda a fost trimisa</h1>
         <p className="text-[#17181A]/60 text-[15px] mb-8">Te contactam in cel mult 24h pentru confirmare si detalii de livrare.</p>
-        <div className="flex items-center justify-center gap-3 flex-wrap">
-          <button onClick={() => navigate('/')} className="cta-glow inline-block bg-[#17181A] text-white rounded-full px-7 py-3.5 text-[14px] font-medium">Inapoi la site</button>
-          {paymentInfo?.payment_available && paymentInfo?.payment_url && (
-            <a href={paymentInfo.payment_url} className="cta-glow inline-block border border-[#17181A]/15 text-[#17181A] rounded-full px-7 py-3.5 text-[14px] font-medium">Plateste online acum</a>
-          )}
-        </div>
+        <button onClick={() => navigate('/')} className="cta-glow inline-block bg-[#17181A] text-white rounded-full px-7 py-3.5 text-[14px] font-medium">Inapoi la site</button>
       </div>
     )
   }
