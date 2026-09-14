@@ -48,7 +48,7 @@ const PRICES_NO_LED = {
 const MODELS = [
   { id: 'halo', name: 'halo', dim: 'Marime mare, pe perete' },
   { id: 'baby', name: 'baby.halo', dim: '26 x 15 cm, de birou' },
-  { id: 'test', name: '⚠️ TEST 1 RON', dim: 'DOAR PENTRU TESTARE PLATA - NU COMANDA' },
+  { id: 'test', name: '⚠️ TEST 11.5 RON', dim: 'DOAR PENTRU TESTARE PLATA - NU COMANDA' },
 ]
 
 // baby.halo: doar sticla, dimensiune fixa, pret unic - TVA 21% inclus
@@ -119,12 +119,12 @@ function MirrorConfigurator() {
   // baby.halo si produsul de test nu au banda LED - ignora orice culoare aleasa anterior
   const selectedLed = (isBaby || isTestProduct) ? NO_LED : LED_COLORS.find((c) => c.id === led)
   const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
-  const totalPrice = isTestProduct ? 1 : (isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0))
+  const totalPrice = isTestProduct ? 11.5 : (isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0))
   // Cart/checkout always uses totalPrice (TVA inclus, ce se plateste efectiv);
   // toggle-ul de mai jos e doar pentru afisare, sa compare clientul preturile.
   const displayPrice = exclVat ? Math.round(totalPrice / 1.21) : totalPrice
   const sizeLabel = isTestProduct ? 'Test' : (isBaby ? BABY_SIZE_LABEL : selectedSize.label)
-  const modelName = isTestProduct ? 'TEST 1 RON - NU LIVRA' : (isBaby ? 'baby.halo' : 'halo')
+  const modelName = isTestProduct ? 'TEST 11.5 RON - NU LIVRA' : (isBaby ? 'baby.halo' : 'halo')
 
   function handleAvatar(e) {
     const file = e.target.files[0]
@@ -247,7 +247,7 @@ function MirrorConfigurator() {
         {isTestProduct ? (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Marime</div>
-            <div className="rounded-xl border border-red-500/40 bg-red-50 px-3 py-2.5 text-[12px] text-red-700">Produs de test - 1 RON, fara livrare</div>
+            <div className="rounded-xl border border-red-500/40 bg-red-50 px-3 py-2.5 text-[12px] text-red-700">Produs de test - 11.5 RON, fara livrare</div>
           </div>
         ) : isBaby ? (
           <div>
