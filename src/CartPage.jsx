@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from './CartContext'
 import MirrorPreview from './MirrorPreview'
 import SearchableSelect from './SearchableSelect'
@@ -43,6 +43,7 @@ export default function CartPage() {
     companyName: '', cui: '', regCom: '',
   })
   const [localitatiOptions, setLocalitatiOptions] = useState([])
+  const [acceptTerms, setAcceptTerms] = useState(false)
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
@@ -75,7 +76,7 @@ export default function CartPage() {
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!items.length) return
+    if (!items.length || !acceptTerms) return
     setSending(true)
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://halomirrors.local'
@@ -244,7 +245,13 @@ export default function CartPage() {
             </div>
             <input value={form.address} onChange={set('address')} placeholder="adresa (strada, numar)" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
             <input value={form.postcode} onChange={set('postcode')} placeholder="cod postal" className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-            <button type="submit" disabled={sending} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium disabled:opacity-60 mt-1">
+            <label className="flex items-start gap-2 pt-1 text-[12px] text-black/60 leading-snug">
+              <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} required className="mt-0.5" />
+              <span>
+                Am citit si sunt de acord cu <Link to="/termeni-si-conditii" target="_blank" className="underline hover:text-[#17181A]">Termenii si conditiile</Link> si <Link to="/politica-de-retur" target="_blank" className="underline hover:text-[#17181A]">Politica de retur</Link>.
+              </span>
+            </label>
+            <button type="submit" disabled={sending || !acceptTerms} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium disabled:opacity-60 mt-1">
               {sending ? 'Se trimite...' : 'Trimite comanda'}
             </button>
           </form>

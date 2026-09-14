@@ -49,6 +49,7 @@ export default function Footer() {
             <Link key={path} to={path} style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>{label}</Link>
           ))}
           <a href="https://anpc.ro" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>ANPC</a>
+          <a href="https://anpc.ro/ce-este-sal/" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>ANPC-SAL</a>
           <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noreferrer" style={{ color: 'rgba(255,255,255,0.5)', textDecoration: 'none', fontSize: '12px' }}>Solutionare online (SOL)</a>
         </div>
 

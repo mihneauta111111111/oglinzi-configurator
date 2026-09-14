@@ -1,16 +1,15 @@
 // Legal pages (terms, privacy, cookies, returns), standard for a made-to-order
-// personalized product sold online in Romania/EU. Company identity fields are
-// placeholders (bracketed) until the client supplies real registration data.
+// personalized product sold online in Romania/EU.
 const COMPANY = {
-  name: '[Denumire firma SRL]',
-  cui: '[CUI]',
-  regCom: '[Nr. Reg. Com.]',
-  address: '[Adresa sediu social]',
+  name: 'Global Analysis Design Consulting S.R.L.',
+  cui: 'RO18988768',
+  regCom: 'J03/1487/2006',
+  address: 'Sat Mosoaia, Str. Campului nr. 594A, com. Mosoaia, jud. Arges',
   email: 'contact@halomirrors.ro',
   phone: '0728 085 494',
 }
 
-const LAST_UPDATED = '13 august 2026'
+const LAST_UPDATED = '14 septembrie 2026'
 
 function Section({ heading, paragraphs, list }) {
   return (
