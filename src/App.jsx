@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Navbar from './Navbar'
 import Footer from './Footer'
+import CookieConsent from './CookieConsent'
 import HomePage from './HomePage'
 import CartPage from './CartPage'
 import { StickyCta } from './LandingSections'
@@ -33,6 +34,7 @@ function App() {
       <Footer />
       {isHome && <div className="md:hidden" style={{ height: '66px', background: '#17181A' }} />}
       {isHome && <StickyCta />}
+      <CookieConsent />
     </div>
   )
 }
