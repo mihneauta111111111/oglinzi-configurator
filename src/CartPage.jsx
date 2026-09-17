@@ -23,6 +23,14 @@ function Thumb({ item }) {
   )
 }
 
+function FieldLabel({ children, required }) {
+  return (
+    <span className="block text-[11px] text-black/45 mb-1">
+      {children}{required && <span className="text-red-500"> *</span>}
+    </span>
+  )
+}
+
 function QtyStepper({ qty, onDec, onInc }) {
   const btn = 'w-8 h-8 flex items-center justify-center text-[16px] leading-none text-black/60 hover:text-black transition-colors'
   return (
@@ -38,7 +46,7 @@ export default function CartPage() {
   const { items, removeItem, updateQty, clear, total, count } = useCart()
   const navigate = useNavigate()
   const [form, setForm] = useState({
-    customerType: 'pf', lastName: '', firstName: '', phone: '', email: '', address: '',
+    customerType: 'pf', lastName: '', firstName: '', phone: '', email: '', address: '', reper: '',
     judet: '', localitate: '', postcode: '',
     companyName: '', cui: '', regCom: '',
   })
@@ -210,41 +218,78 @@ export default function CartPage() {
           <form onSubmit={handleSubmit} className="space-y-2">
             {form.customerType === 'pj' && (
               <>
-                <input value={form.companyName} onChange={set('companyName')} placeholder="denumire firma" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                <label className="block">
+                  <FieldLabel required>Denumire firma</FieldLabel>
+                  <input value={form.companyName} onChange={set('companyName')} placeholder="denumire firma" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                </label>
                 <div className="grid grid-cols-2 gap-2">
-                  <input value={form.cui} onChange={set('cui')} placeholder="CUI" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-                  <input value={form.regCom} onChange={set('regCom')} placeholder="nr. Reg. Com." required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                  <label className="block">
+                    <FieldLabel required>CUI</FieldLabel>
+                    <input value={form.cui} onChange={set('cui')} placeholder="CUI" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                  </label>
+                  <label className="block">
+                    <FieldLabel required>Nr. Reg. Com.</FieldLabel>
+                    <input value={form.regCom} onChange={set('regCom')} placeholder="nr. Reg. Com." required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+                  </label>
                 </div>
               </>
             )}
             <div className="grid grid-cols-2 gap-2">
-              <input value={form.lastName} onChange={set('lastName')} placeholder="nume" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-              <input value={form.firstName} onChange={set('firstName')} placeholder="prenume" required className="rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+              <label className="block">
+                <FieldLabel required>Nume</FieldLabel>
+                <input value={form.lastName} onChange={set('lastName')} placeholder="nume" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+              </label>
+              <label className="block">
+                <FieldLabel required>Prenume</FieldLabel>
+                <input value={form.firstName} onChange={set('firstName')} placeholder="prenume" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+              </label>
             </div>
             {form.customerType === 'pj' && (
               <p className="text-[10.5px] text-black/40 -mt-1">Persoana de contact pentru livrare</p>
             )}
-            <input type="tel" value={form.phone} onChange={set('phone')} placeholder="telefon" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-            <input type="email" value={form.email} onChange={set('email')} placeholder="email" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            <label className="block">
+              <FieldLabel required>Telefon</FieldLabel>
+              <input type="tel" value={form.phone} onChange={set('phone')} placeholder="telefon" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </label>
+            <label className="block">
+              <FieldLabel required>Email</FieldLabel>
+              <input type="email" value={form.email} onChange={set('email')} placeholder="email" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </label>
             <div className="grid grid-cols-2 gap-2">
-              <SearchableSelect
-                value={form.judet}
-                onChange={handleJudetChange}
-                options={JUDETE_OPTIONS}
-                placeholder="judet"
-                required
-              />
-              <SearchableSelect
-                value={form.localitate}
-                onChange={(val) => setForm((f) => ({ ...f, localitate: val }))}
-                options={localitatiOptions}
-                placeholder={form.judet ? 'localitate' : 'alege intai judetul'}
-                disabled={!form.judet}
-                required
-              />
+              <label className="block">
+                <FieldLabel required>Judet</FieldLabel>
+                <SearchableSelect
+                  value={form.judet}
+                  onChange={handleJudetChange}
+                  options={JUDETE_OPTIONS}
+                  placeholder="judet"
+                  required
+                />
+              </label>
+              <label className="block">
+                <FieldLabel required>Localitate</FieldLabel>
+                <SearchableSelect
+                  value={form.localitate}
+                  onChange={(val) => setForm((f) => ({ ...f, localitate: val }))}
+                  options={localitatiOptions}
+                  placeholder={form.judet ? 'localitate' : 'alege intai judetul'}
+                  disabled={!form.judet}
+                  required
+                />
+              </label>
             </div>
-            <input value={form.address} onChange={set('address')} placeholder="adresa (strada, numar)" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
-            <input value={form.postcode} onChange={set('postcode')} placeholder="cod postal" className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            <label className="block">
+              <FieldLabel required>Adresa</FieldLabel>
+              <input value={form.address} onChange={set('address')} placeholder="strada, numar" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </label>
+            <label className="block">
+              <FieldLabel>Reper</FieldLabel>
+              <input value={form.reper} onChange={set('reper')} placeholder="ex: vis-a-vis de..., bloc, ap., interfon" className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </label>
+            <label className="block">
+              <FieldLabel required>Cod postal</FieldLabel>
+              <input value={form.postcode} onChange={set('postcode')} placeholder="cod postal" required className="w-full rounded-lg border border-black/10 px-3 py-2.5 text-[13px] focus:outline-none focus:border-[#17181A]" />
+            </label>
             <label className="flex items-start gap-2 pt-1 text-[12px] text-black/60 leading-snug">
               <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} required className="mt-0.5" />
               <span>
