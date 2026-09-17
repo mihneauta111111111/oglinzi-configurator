@@ -143,6 +143,8 @@ function MirrorConfigurator() {
       standLabel: (isBaby || isTestProduct) ? '' : selectedStand.label,
       size: (isBaby || isTestProduct) ? null : size,
       stand: (isBaby || isTestProduct) ? null : stand,
+      material: (isBaby || isTestProduct) ? null : material,
+      led: (isBaby || isTestProduct) ? null : led,
       isBaby,
       isTest: isTestProduct,
       price: totalPrice,
