@@ -48,7 +48,6 @@ const PRICES_NO_LED = {
 const MODELS = [
   { id: 'halo', name: 'halo', dim: 'Marime mare, pe perete' },
   { id: 'baby', name: 'baby.halo', dim: '26 x 15 cm, de birou' },
-  { id: 'test', name: '⚠️ TEST 11.5 RON', dim: 'DOAR PENTRU TESTARE PLATA - NU COMANDA' },
 ]
 
 // baby.halo: doar sticla, dimensiune fixa, pret unic - TVA 21% inclus
@@ -113,18 +112,15 @@ function MirrorConfigurator() {
   const selectedSize = SIZES.find((s) => s.id === size)
   const selectedStand = STAND_OPTIONS.find((s) => s.id === stand)
   const isBaby = model === 'baby'
-  // TEMPORAR: model de test pentru verificarea integrarii EuPlatesc (cont de
-  // test, plafon 1 RON). De scos dupa ce testul de plata e confirmat.
-  const isTestProduct = model === 'test'
-  // baby.halo si produsul de test nu au banda LED - ignora orice culoare aleasa anterior
-  const selectedLed = (isBaby || isTestProduct) ? NO_LED : LED_COLORS.find((c) => c.id === led)
+  // baby.halo nu are banda LED - ignora orice culoare aleasa anterior
+  const selectedLed = isBaby ? NO_LED : LED_COLORS.find((c) => c.id === led)
   const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
-  const totalPrice = isTestProduct ? 11.5 : (isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0))
+  const totalPrice = isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0)
   // Cart/checkout always uses totalPrice (TVA inclus, ce se plateste efectiv);
   // toggle-ul de mai jos e doar pentru afisare, sa compare clientul preturile.
   const displayPrice = exclVat ? Math.round(totalPrice / 1.21) : totalPrice
-  const sizeLabel = isTestProduct ? 'Test' : (isBaby ? BABY_SIZE_LABEL : selectedSize.label)
-  const modelName = isTestProduct ? 'TEST 11.5 RON - NU LIVRA' : (isBaby ? 'baby.halo' : 'halo')
+  const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
+  const modelName = isBaby ? 'baby.halo' : 'halo'
 
   function handleAvatar(e) {
     const file = e.target.files[0]
@@ -138,15 +134,14 @@ function MirrorConfigurator() {
   function handleAddToCart() {
     addItem({
       modelName,
-      materialName: isTestProduct ? 'TEST' : (isBaby ? 'Sticla' : selectedMaterial.name),
+      materialName: isBaby ? 'Sticla' : selectedMaterial.name,
       sizeLabel,
-      standLabel: (isBaby || isTestProduct) ? '' : selectedStand.label,
-      size: (isBaby || isTestProduct) ? null : size,
-      stand: (isBaby || isTestProduct) ? null : stand,
-      material: (isBaby || isTestProduct) ? null : material,
-      led: (isBaby || isTestProduct) ? null : led,
+      standLabel: isBaby ? '' : selectedStand.label,
+      size: isBaby ? null : size,
+      stand: isBaby ? null : stand,
+      material: isBaby ? null : material,
+      led: isBaby ? null : led,
       isBaby,
-      isTest: isTestProduct,
       price: totalPrice,
       ledName: selectedLed.name,
       ledHex: selectedLed.hex,
@@ -220,7 +215,7 @@ function MirrorConfigurator() {
           </div>
         </div>
 
-        {!isBaby && !isTestProduct && (
+        {!isBaby && (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Material</div>
             <div className="grid grid-cols-2 gap-2">
@@ -233,7 +228,7 @@ function MirrorConfigurator() {
           </div>
         )}
 
-        {!isBaby && !isTestProduct && (
+        {!isBaby && (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Suport</div>
             <div className="grid grid-cols-2 gap-2">
@@ -246,12 +241,7 @@ function MirrorConfigurator() {
           </div>
         )}
 
-        {isTestProduct ? (
-          <div>
-            <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Marime</div>
-            <div className="rounded-xl border border-red-500/40 bg-red-50 px-3 py-2.5 text-[12px] text-red-700">Produs de test - 11.5 RON, fara livrare</div>
-          </div>
-        ) : isBaby ? (
+        {isBaby ? (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Marime</div>
             <div className="rounded-xl border border-black/10 px-3 py-2.5 text-[12px] text-black/60">Sticla, dimensiune fixa <span className="font-medium text-[#17181A]">26 x 15 cm</span></div>
@@ -270,7 +260,6 @@ function MirrorConfigurator() {
           </div>
         )}
 
-        {!isTestProduct && (
         <div>
           <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">{isBaby ? 'Stil postare' : 'Culoare LED'}</div>
           <div className={'flex items-center gap-4 flex-wrap' + (isBaby ? '' : ' justify-between')}>
@@ -305,7 +294,6 @@ function MirrorConfigurator() {
             </div>
           )}
         </div>
-        )}
 
         {/* Optional post details - collapsed so the core flow stays short */}
         <div className="border-t border-black/10 pt-4">
