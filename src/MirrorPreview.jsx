@@ -41,6 +41,7 @@ export default function MirrorPreview({
   verified = true,
   dark = false,
   avatar = '',
+  location = '',
   likes = '0',
   comments = '0',
   reposts = '0',
@@ -68,9 +69,12 @@ export default function MirrorPreview({
               ? <img src={avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span style={{ fontSize: '13px', fontWeight: '700', color: avatarText, textTransform: 'uppercase' }}>{username.slice(0, 2)}</span>}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0 }}>
-            <span style={{ fontSize: '19px', fontWeight: '700', color: postText, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{username}</span>
-            {verified && <VerifiedBadge size={17} />}
+          <div style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '5px', minWidth: 0 }}>
+              <span style={{ fontSize: '19px', fontWeight: '700', color: postText, letterSpacing: '-0.01em', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{username}</span>
+              {verified && <VerifiedBadge size={17} />}
+            </div>
+            {location && <span style={{ fontSize: '12px', color: postText, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{location}</span>}
           </div>
         </div>
         <div style={{ color: postText, flexShrink: 0, paddingLeft: '8px' }}><DotsIcon /></div>

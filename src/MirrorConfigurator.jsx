@@ -50,7 +50,7 @@ const MODELS = [
   { id: 'baby', name: 'baby.halo', dim: '26 x 15 cm, de birou' },
 ]
 
-// baby.halo: doar sticla, dimensiune fixa, pret unic - TVA 21% inclus
+// baby.halo: doar plexi (acrilic), dimensiune fixa, pret unic - TVA 21% inclus
 const BABY_PRICE = 151
 const BABY_SIZE_LABEL = '26 x 15 cm'
 
@@ -134,7 +134,7 @@ function MirrorConfigurator() {
   function handleAddToCart() {
     addItem({
       modelName,
-      materialName: isBaby ? 'Sticla' : selectedMaterial.name,
+      materialName: isBaby ? 'Plexi / Acrilic' : selectedMaterial.name,
       sizeLabel,
       standLabel: isBaby ? '' : selectedStand.label,
       size: isBaby ? null : size,
@@ -169,6 +169,7 @@ function MirrorConfigurator() {
             verified={verified}
             dark={dark}
             avatar={avatar}
+            location={location}
             likes={likes}
             comments={comments}
             reposts={reposts}
@@ -188,7 +189,7 @@ function MirrorConfigurator() {
             <div className="spectrum-line" style={{ width: '32px', marginBottom: '14px' }} />
             <p className="font-display text-[15px] font-medium mb-3">Comanda ta, fara griji</p>
             <ul className="space-y-2.5">
-              {(isBaby ? ['Oglinda personalizata din sticla, 26 x 15 cm', 'Fara banda LED'] : ['Oglinda personalizata din sticla sau plexi', 'Banda LED cu alimentare la priza']).concat('Kit de prindere si ambalaj protejat').map((t) => (
+              {(isBaby ? ['Oglinda personalizata din plexi, 26 x 15 cm', 'Fara banda LED'] : ['Oglinda personalizata din sticla sau plexi', 'Banda LED cu alimentare la priza']).concat('Kit de prindere si ambalaj protejat').map((t) => (
                 <li key={t} className="flex items-start gap-2.5 text-[13px] text-black/65 leading-snug">
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9B7BFF" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0, marginTop: '1px' }}><path d="M5 12.5l4.5 4.5L19 7" /></svg>
                   {t}
@@ -244,7 +245,7 @@ function MirrorConfigurator() {
         {isBaby ? (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Marime</div>
-            <div className="rounded-xl border border-black/10 px-3 py-2.5 text-[12px] text-black/60">Sticla, dimensiune fixa <span className="font-medium text-[#17181A]">26 x 15 cm</span></div>
+            <div className="rounded-xl border border-black/10 px-3 py-2.5 text-[12px] text-black/60">Plexi, dimensiune fixa <span className="font-medium text-[#17181A]">26 x 15 cm</span></div>
           </div>
         ) : (
           <div>
