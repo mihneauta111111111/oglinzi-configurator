@@ -20,11 +20,13 @@ export const JUDET_TIERS = {
   suceava: 4, timis: 4, tulcea: 4, vaslui: 4,
 }
 
+// XL extrapolat cu acelasi ritm de crestere M->L aplicat inca o data (L->XL),
+// ca sa ramana monoton si proportional cu restul tabelului.
 const HALO_SHIPPING_FEES = {
-  1: { no: { S: 13, M: 16, L: 21 }, yes: { S: 22, M: 26, L: 34 } },
-  2: { no: { S: 20, M: 25, L: 32 }, yes: { S: 34, M: 40, L: 52 } },
-  3: { no: { S: 38, M: 48, L: 61 }, yes: { S: 65, M: 76, L: 99 } },
-  4: { no: { S: 69, M: 87, L: 111 }, yes: { S: 118, M: 139, L: 180 } },
+  1: { no: { S: 13, M: 16, L: 21, XL: 28 }, yes: { S: 22, M: 26, L: 34, XL: 44 } },
+  2: { no: { S: 20, M: 25, L: 32, XL: 41 }, yes: { S: 34, M: 40, L: 52, XL: 68 } },
+  3: { no: { S: 38, M: 48, L: 61, XL: 78 }, yes: { S: 65, M: 76, L: 99, XL: 129 } },
+  4: { no: { S: 69, M: 87, L: 111, XL: 142 }, yes: { S: 118, M: 139, L: 180, XL: 233 } },
 }
 
 const BABY_SHIPPING_FEES = { 1: 5, 2: 8, 3: 14, 4: 20 }
@@ -39,7 +41,7 @@ export function getShippingFeeForItem(item, judetCod) {
   const isBaby = item.isBaby ?? item.modelName === 'baby.halo'
   if (isBaby) return BABY_SHIPPING_FEES[tier]
 
-  const size = ['S', 'M', 'L'].includes(item.size) ? item.size : 'M'
+  const size = ['S', 'M', 'L', 'XL'].includes(item.size) ? item.size : 'M'
   const stand = item.stand === 'yes' ? 'yes' : 'no'
   return HALO_SHIPPING_FEES[tier][stand][size]
 }

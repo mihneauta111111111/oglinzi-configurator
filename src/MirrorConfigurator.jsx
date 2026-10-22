@@ -12,36 +12,45 @@ const SIZES = [
   { id: 'S', label: '1.0m x 0.5m' },
   { id: 'M', label: '1.2m x 0.6m' },
   { id: 'L', label: '1.4m x 0.7m' },
+  { id: 'XL', label: '1.6m x 0.8m' },
 ]
 
+// "De perete" = fara stander, prinsa direct pe perete (sistem de prindere
+// inclus). "Cu stander" = cu picioare de sustinere proprii, nu necesita
+// perete - vezi STAND_COLORS mai jos pentru culoarea picioarelor.
 const STAND_OPTIONS = [
-  { id: 'no', label: 'Fara stander' },
-  { id: 'yes', label: 'Cu stander' },
+  { id: 'no', label: 'De perete', note: 'Sistem de prindere inclus' },
+  { id: 'yes', label: 'Cu stander', note: '(cu picioare de sustinere)' },
 ]
 
-// TVA 21% inclus
+const STAND_COLORS = [
+  { id: 'negru', name: 'Negru', hex: '#17181A' },
+  { id: 'alb', name: 'Alb', hex: '#F5F5F5' },
+]
+
+// TVA 21% inclus. XL = L + 100 RON, pe fiecare combinatie material/suport.
 const PRICES = {
   sticla: {
-    no: { S: 1022, M: 1088, L: 1148 },
-    yes: { S: 1209, M: 1271, L: 1452 },
+    no: { S: 1022, M: 1088, L: 1148, XL: 1248 },
+    yes: { S: 1209, M: 1271, L: 1452, XL: 1552 },
   },
   plexi: {
-    no: { S: 967, M: 1027, L: 1088 },
-    yes: { S: 1209, M: 1271, L: 1452 },
+    no: { S: 967, M: 1027, L: 1088, XL: 1188 },
+    yes: { S: 1209, M: 1271, L: 1452, XL: 1552 },
   },
 }
 
 // Preturi separate pentru varianta fara banda LED (fara costul benzii),
 // TVA 21% inclus. Plexi + suport foloseste acelasi pret ca sticla + suport,
-// la fel ca in tabelul PRICES de mai sus.
+// la fel ca in tabelul PRICES de mai sus. XL = L + 100 RON.
 const PRICES_NO_LED = {
   sticla: {
-    no: { S: 871, M: 937, L: 997 },
-    yes: { S: 1027, M: 1089, L: 1271 },
+    no: { S: 871, M: 937, L: 997, XL: 1097 },
+    yes: { S: 1027, M: 1089, L: 1271, XL: 1371 },
   },
   plexi: {
-    no: { S: 816, M: 876, L: 937 },
-    yes: { S: 1027, M: 1089, L: 1271 },
+    no: { S: 816, M: 876, L: 937, XL: 1037 },
+    yes: { S: 1027, M: 1089, L: 1271, XL: 1371 },
   },
 }
 
@@ -89,6 +98,7 @@ function MirrorConfigurator() {
   const [material, setMaterial] = useState('sticla')
   const [size, setSize] = useState('M')
   const [stand, setStand] = useState('no')
+  const [standColor, setStandColor] = useState('negru')
   const [led, setLed] = useState('warm')
   const [avatar, setAvatar] = useState(null)
   const [username, setUsername] = useState('afacerea.ta')
@@ -111,6 +121,8 @@ function MirrorConfigurator() {
   const selectedMaterial = MATERIALS.find((m) => m.id === material)
   const selectedSize = SIZES.find((s) => s.id === size)
   const selectedStand = STAND_OPTIONS.find((s) => s.id === stand)
+  const hasStandColor = stand === 'yes'
+  const selectedStandColor = STAND_COLORS.find((c) => c.id === standColor)
   const isBaby = model === 'baby'
   // baby.halo nu are banda LED - ignora orice culoare aleasa anterior
   const selectedLed = isBaby ? NO_LED : LED_COLORS.find((c) => c.id === led)
@@ -137,6 +149,8 @@ function MirrorConfigurator() {
       materialName: isBaby ? 'Plexi / Acrilic' : selectedMaterial.name,
       sizeLabel,
       standLabel: isBaby ? '' : selectedStand.label,
+      standColor: !isBaby && hasStandColor ? standColor : null,
+      standColorName: !isBaby && hasStandColor ? selectedStandColor.name : '',
       size: isBaby ? null : size,
       stand: isBaby ? null : stand,
       material: isBaby ? null : material,
@@ -236,9 +250,26 @@ function MirrorConfigurator() {
               {STAND_OPTIONS.map((s) => (
                 <button key={s.id} type="button" onClick={() => setStand(s.id)} className={'rounded-xl border px-3 py-2.5 text-left transition-colors ' + (stand === s.id ? 'border-[#17181A] bg-[#17181A]/5' : 'border-black/10 hover:border-black/25')}>
                   <div className="text-[12px] font-medium">{s.label}</div>
+                  <div className="text-[11px] text-black/45 mt-0.5">{s.note}</div>
                 </button>
               ))}
             </div>
+            {hasStandColor && (
+              <div className="flex items-center gap-3 mt-2.5">
+                <span className="text-[11px] text-black/45">Culoare picioare:</span>
+                {STAND_COLORS.map((c) => (
+                  <button
+                    key={c.id}
+                    type="button"
+                    title={c.name}
+                    onClick={() => setStandColor(c.id)}
+                    className={'w-7 h-7 rounded-full ring-2 transition-transform ' + (standColor === c.id ? 'ring-black scale-110' : 'ring-transparent')}
+                    style={{ background: c.hex, border: '1px solid rgba(0,0,0,0.15)' }}
+                  />
+                ))}
+                <span className="text-[11px] text-black/45">{selectedStandColor.name}</span>
+              </div>
+            )}
           </div>
         )}
 
@@ -250,7 +281,7 @@ function MirrorConfigurator() {
         ) : (
           <div>
             <div className="text-[11px] uppercase tracking-wide text-black/45 mb-2 font-medium">Marime</div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-2">
               {SIZES.map((s) => (
                 <button key={s.id} type="button" onClick={() => setSize(s.id)} className={'rounded-xl border px-3 py-2.5 text-left transition-colors ' + (size === s.id ? 'border-[#17181A] bg-[#17181A]/5' : 'border-black/10 hover:border-black/25')}>
                   <div className="text-[12px] font-medium">{s.label}</div>
