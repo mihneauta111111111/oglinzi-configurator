@@ -66,6 +66,10 @@ const MODELS = [
 const BABY_PRICE = 151
 const BABY_SIZE_LABEL = '26 x 15 cm'
 
+// Sticla e fragila la transport - impachetare speciala, cost suplimentar
+// fata de plexi (care nu are nevoie de el). TVA 21% inclus.
+const GLASS_PACKAGING_FEE = 70
+
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#F6B93B' },
   { id: 'white', name: 'Alb', hex: '#F2F6FF' },
@@ -131,7 +135,7 @@ function MirrorConfigurator() {
   // baby.halo nu are banda LED - ignora orice culoare aleasa anterior
   const selectedLed = isBaby ? NO_LED : LED_COLORS.find((c) => c.id === led)
   const activePrices = led === 'none' ? PRICES_NO_LED : PRICES
-  const totalPrice = isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0)
+  const totalPrice = isBaby ? BABY_PRICE : activePrices[material][stand][size] + (selectedLed.extra || 0) + (material === 'sticla' ? GLASS_PACKAGING_FEE : 0)
   // Cart/checkout always uses totalPrice (TVA inclus, ce se plateste efectiv);
   // toggle-ul de mai jos e doar pentru afisare, sa compare clientul preturile.
   const displayPrice = exclVat ? Math.round(totalPrice / 1.21) : totalPrice

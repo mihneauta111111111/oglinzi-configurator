@@ -170,6 +170,11 @@ export default function CartPage() {
                     <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex || '#fff', border: '1px solid rgba(0,0,0,0.15)', display: 'inline-block' }} />
                     LED {item.ledName}{item.dark ? ' · fundal negru' : ''}
                   </div>
+                  {item.material === 'sticla' && (
+                    <div className="text-[12px] text-black/45 mt-1.5 italic">
+                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+70 RON impachetare, deja inclus in pret).
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col items-end gap-3 self-stretch justify-between">
                   <button type="button" onClick={() => removeItem(item.id)} aria-label="Elimina" className="text-black/30 hover:text-black/70 transition-colors">
