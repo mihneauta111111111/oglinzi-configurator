@@ -8,14 +8,14 @@ const MATERIALS = [
   { id: 'plexi', name: 'Plexi / Acrilic' },
 ]
 
-// scale = cat de mare apare preview-ul oglinzii fata de M (referinta 1.0),
-// aproximativ proportional cu dimensiunea reala, dar comprimat ca sa nu
-// "sara" vizual pe ecrane mici (vezi zoom-ul aplicat mai jos).
+// Toate marimile au aceeasi proportie (latimea = jumatate din inaltime),
+// deci preview-ul nu se redimensioneaza cand schimbi marimea - doar
+// eticheta si pretul.
 const SIZES = [
-  { id: 'S', label: '1.0m x 0.5m', scale: 0.92 },
-  { id: 'M', label: '1.2m x 0.6m', scale: 1 },
-  { id: 'L', label: '1.4m x 0.7m', scale: 1.08 },
-  { id: 'XL', label: '1.6m x 0.8m', scale: 1.16 },
+  { id: 'S', label: '1.0m x 0.5m' },
+  { id: 'M', label: '1.2m x 0.6m' },
+  { id: 'L', label: '1.4m x 0.7m' },
+  { id: 'XL', label: '1.6m x 0.8m' },
 ]
 
 // "De perete" = fara stander, prinsa direct pe perete (sistem de prindere
@@ -31,29 +31,35 @@ const STAND_COLORS = [
   { id: 'alb', name: 'Alb', hex: '#F5F5F5' },
 ]
 
-// TVA 21% inclus. XL = L + 100 RON, pe fiecare combinatie material/suport.
+// TVA 21% inclus. Lista oficiala de preturi e in RON *fara* TVA - aici sunt
+// convertite (x1.21, rotunjit), ca sa se potriveasca exact la toggle-ul
+// "Fara TVA" din configurator:
+//   sticla de perete  845 / 899 / 949 / 1049 + TVA
+//   plexi  de perete  799 / 849 / 899 /  999 + TVA
+//   cu stander        999 / 1050 / 1200 / 1300 + TVA
+// Plexi + stander foloseste acelasi pret ca sticla + stander.
 const PRICES = {
   sticla: {
-    no: { S: 1022, M: 1088, L: 1148, XL: 1248 },
-    yes: { S: 1209, M: 1271, L: 1452, XL: 1552 },
+    no: { S: 1022, M: 1088, L: 1148, XL: 1269 },
+    yes: { S: 1209, M: 1271, L: 1452, XL: 1573 },
   },
   plexi: {
-    no: { S: 967, M: 1027, L: 1088, XL: 1188 },
-    yes: { S: 1209, M: 1271, L: 1452, XL: 1552 },
+    no: { S: 967, M: 1027, L: 1088, XL: 1209 },
+    yes: { S: 1209, M: 1271, L: 1452, XL: 1573 },
   },
 }
 
-// Preturi separate pentru varianta fara banda LED (fara costul benzii),
-// TVA 21% inclus. Plexi + suport foloseste acelasi pret ca sticla + suport,
-// la fel ca in tabelul PRICES de mai sus. XL = L + 100 RON.
+// Preturi separate pentru varianta fara banda LED, TVA 21% inclus. Banda
+// LED costa 151 RON pe oglinzile de perete si 181 pe cele cu stander -
+// aceeasi diferenta la toate marimile, inclusiv XL.
 const PRICES_NO_LED = {
   sticla: {
-    no: { S: 871, M: 937, L: 997, XL: 1097 },
-    yes: { S: 1027, M: 1089, L: 1271, XL: 1371 },
+    no: { S: 871, M: 937, L: 997, XL: 1118 },
+    yes: { S: 1027, M: 1089, L: 1271, XL: 1392 },
   },
   plexi: {
-    no: { S: 816, M: 876, L: 937, XL: 1037 },
-    yes: { S: 1027, M: 1089, L: 1271, XL: 1371 },
+    no: { S: 816, M: 876, L: 937, XL: 1058 },
+    yes: { S: 1027, M: 1089, L: 1271, XL: 1392 },
   },
 }
 
@@ -65,6 +71,12 @@ const MODELS = [
 // baby.halo: doar plexi (acrilic), dimensiune fixa, pret unic - TVA 21% inclus
 const BABY_PRICE = 151
 const BABY_SIZE_LABEL = '26 x 15 cm'
+
+// Proportia reala a fiecarui model, ca preview-ul sa imite exact oglinda:
+// halo are latimea jumatate din inaltime la toate marimile (1.0x0.5m,
+// 1.2x0.6m, 1.4x0.7m, 1.6x0.8m), baby.halo e 26x15 cm.
+const HALO_ASPECT_RATIO = '1 / 2'
+const BABY_ASPECT_RATIO = '15 / 26'
 
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#F6B93B' },
@@ -165,6 +177,7 @@ function MirrorConfigurator() {
       price: totalPrice,
       ledName: selectedLed.name,
       ledHex: selectedLed.hex,
+      aspectRatio: isBaby ? BABY_ASPECT_RATIO : HALO_ASPECT_RATIO,
       dark,
       username, location, verified, likes, comments, reposts, shares, caption, hashtags,
       avatar: avatar || '',
@@ -179,7 +192,7 @@ function MirrorConfigurator() {
       <div aria-hidden style={{ position: 'absolute', top: '6%', left: '50%', transform: 'translateX(-50%)', width: '82%', height: '68%', background: selectedLed.hex ? `radial-gradient(ellipse at center, ${selectedLed.hex}4d, ${selectedLed.hex}1f 42%, rgba(0,0,0,0) 70%)` : 'transparent', filter: 'blur(34px)', pointerEvents: 'none', transition: 'background 0.5s ease' }} />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16 grid lg:grid-cols-[1fr_420px] gap-10">
       <div className="flex flex-col items-center lg:sticky lg:top-24 lg:self-start pt-6 gap-6 lg:gap-10">
-        <div className="relative" style={{ width: 'min(360px, 100%)', zoom: isBaby ? 0.7 : selectedSize.scale }}>
+        <div className="relative" style={{ width: 'min(360px, 100%)', zoom: isBaby ? 0.7 : 1 }}>
           {/* LED backlight bleeding from behind the mirror */}
           <div style={{ position: 'absolute', inset: '-30px', borderRadius: '72px', filter: 'blur(46px)', opacity: 0.5, backgroundColor: selectedLed.hex || 'transparent', transition: 'background-color 0.5s ease' }} />
 
@@ -197,6 +210,7 @@ function MirrorConfigurator() {
             caption={caption}
             hashtags={hashtags}
             ledHex={selectedLed.hex}
+            aspectRatio={isBaby ? BABY_ASPECT_RATIO : HALO_ASPECT_RATIO}
           />
 
           {/* Grounding reflection */}

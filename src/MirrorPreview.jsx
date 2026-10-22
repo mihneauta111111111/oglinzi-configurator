@@ -49,6 +49,10 @@ export default function MirrorPreview({
   caption = '',
   hashtags = '',
   ledHex = '#FFC98A',
+  // Proportia reala a oglinzii: latimea e exact jumatate din inaltime
+  // (1.0x0.5m, 1.2x0.6m, 1.4x0.7m, 1.6x0.8m - toate 1:2). baby.halo e
+  // 26x15cm, deci primeste "15 / 26" de la configurator.
+  aspectRatio = '1 / 2',
 }) {
   const postBg = dark ? '#000000' : '#ffffff'
   const postText = dark ? '#f5f5f5' : '#000000'
@@ -60,7 +64,7 @@ export default function MirrorPreview({
   const glow = ledHex ? '0 0 44px 2px ' + ledHex + '55, ' : ''
 
   return (
-    <div style={{ position: 'relative', width: '100%', background: postBg, borderRadius: '44px', overflow: 'hidden', border: postBodyBorder, boxShadow: glow + '0 30px 55px -20px rgba(0,0,0,0.5)', transition: 'background 0.35s ease' }}>
+    <div style={{ position: 'relative', width: '100%', aspectRatio, display: 'flex', flexDirection: 'column', background: postBg, borderRadius: '44px', overflow: 'hidden', border: postBodyBorder, boxShadow: glow + '0 30px 55px -20px rgba(0,0,0,0.5)', transition: 'background 0.35s ease' }}>
       {/* Post header (avatar + username + menu) */}
       <div style={{ padding: '16px 18px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '11px', minWidth: 0 }}>
@@ -80,8 +84,9 @@ export default function MirrorPreview({
         <div style={{ color: postText, flexShrink: 0, paddingLeft: '8px' }}><DotsIcon /></div>
       </div>
 
-      {/* Mirror surface (the real reflective glass) */}
-      <div style={{ position: 'relative', width: '100%', aspectRatio: '1 / 1.16', background: 'linear-gradient(158deg, #cfe1f0 0%, #eef5fb 46%, #b9cee1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+      {/* Mirror surface (the real reflective glass) - umple spatiul ramas,
+          ca proportia totala a oglinzii sa fie exact cea reala */}
+      <div style={{ position: 'relative', width: '100%', flex: 1, minHeight: 0, background: 'linear-gradient(158deg, #cfe1f0 0%, #eef5fb 46%, #b9cee1 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(118deg, rgba(255,255,255,0) 40%, rgba(255,255,255,0.6) 50%, rgba(255,255,255,0) 60%)' }} />
         <span style={{ position: 'relative', fontSize: '11px', letterSpacing: '0.16em', color: 'rgba(0,0,0,0.3)', textTransform: 'uppercase' }}>reflexia ta</span>
       </div>

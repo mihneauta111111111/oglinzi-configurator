@@ -9,13 +9,18 @@ import judeteData from './data/judete.json'
 const JUDETE_OPTIONS = judeteData.map((j) => ({ value: j.cod, label: j.nume }))
 const localitatiModules = import.meta.glob('./data/localitati/*.json')
 
-const THUMB_W = 84
+const THUMB_W = 60
 const DESIGN_W = 360
 const THUMB_SCALE = THUMB_W / DESIGN_W
 
 function Thumb({ item }) {
+  // Inaltimea thumbnail-ului urmeaza proportia reala a oglinzii, altfel
+  // cardul scalat ar fi taiat. Produsele mai vechi din cos (salvate inainte
+  // de asta) nu au `aspectRatio` - cad pe 1:2, proportia halo.
+  const [ratioW, ratioH] = (item.aspectRatio || '1 / 2').split('/').map((n) => parseFloat(n))
+  const height = Math.round(THUMB_W * (ratioH / ratioW))
   return (
-    <div style={{ position: 'relative', width: THUMB_W + 'px', height: '104px', borderRadius: '16px', overflow: 'hidden', flexShrink: 0, background: item.dark ? '#000' : '#fff', boxShadow: `0 0 0 1px rgba(0,0,0,0.06)${item.ledHex ? `, 0 8px 18px -8px ${item.ledHex}cc` : ''}` }}>
+    <div style={{ position: 'relative', width: THUMB_W + 'px', height: height + 'px', borderRadius: '12px', overflow: 'hidden', flexShrink: 0, background: item.dark ? '#000' : '#fff', boxShadow: `0 0 0 1px rgba(0,0,0,0.06)${item.ledHex ? `, 0 8px 18px -8px ${item.ledHex}cc` : ''}` }}>
       <div style={{ position: 'absolute', top: 0, left: 0, width: DESIGN_W + 'px', transform: `scale(${THUMB_SCALE})`, transformOrigin: 'top left' }}>
         <MirrorPreview {...item} ledHex={item.ledHex} />
       </div>
