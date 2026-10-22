@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useCart } from './CartContext'
 import MirrorPreview from './MirrorPreview'
 import SearchableSelect from './SearchableSelect'
-import { getCartShippingTotal } from './shipping'
+import { getCartShippingTotal, getCartPackagingTotal, getGlassPackagingFee } from './shipping'
 import judeteData from './data/judete.json'
 
 const JUDETE_OPTIONS = judeteData.map((j) => ({ value: j.cod, label: j.nume }))
@@ -79,8 +79,9 @@ export default function CartPage() {
     return () => { cancelled = true }
   }, [form.judet])
 
-  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet), [items, form.judet])
-  const grandTotal = total + (shippingCost || 0)
+  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet, form.localitate), [items, form.judet, form.localitate])
+  const packagingCost = useMemo(() => getCartPackagingTotal(items), [items])
+  const grandTotal = total + (shippingCost || 0) + packagingCost
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -96,6 +97,7 @@ export default function CartPage() {
           judetNume: selectedJudetLabel,
           subtotal: total,
           shippingCost: shippingCost || 0,
+          packagingCost,
           total: grandTotal,
           items,
         }),
@@ -172,7 +174,7 @@ export default function CartPage() {
                   </div>
                   {item.material === 'sticla' && (
                     <div className="text-[12px] text-black/45 mt-1.5 italic">
-                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+70 RON impachetare, deja inclus in pret).
+                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+{getGlassPackagingFee(item)} RON cutie de protectie, adaugat la total).
                     </div>
                   )}
                 </div>
@@ -196,6 +198,12 @@ export default function CartPage() {
           <div className="spectrum-line" style={{ width: '32px', marginBottom: '18px' }} />
           <div className="space-y-2.5 text-[13.5px]">
             <div className="flex justify-between"><span className="text-black/55">Subtotal</span><span className="font-medium">{total} RON</span></div>
+            {packagingCost > 0 && (
+              <div className="flex justify-between">
+                <span className="text-black/55">Cutie de protectie (sticla)</span>
+                <span className="font-medium">{packagingCost} RON</span>
+              </div>
+            )}
             <div className="flex justify-between">
               <span className="text-black/55">Livrare</span>
               <span className={form.judet ? 'font-medium' : 'text-black/40'}>{form.judet ? `${shippingCost} RON` : 'selecteaza judetul'}</span>

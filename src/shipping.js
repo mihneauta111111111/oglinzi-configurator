@@ -31,10 +31,27 @@ const HALO_SHIPPING_FEES = {
 
 const BABY_SHIPPING_FEES = { 1: 5, 2: 8, 3: 14, 4: 20 }
 
+// Orase in raza de ~100km de Pitesti - tarif fix de transport, indiferent
+// de marime/stander/model, mai mic decat ar rezulta din tabelul pe zone de
+// mai sus (ex: Bucuresti/Prahova/Dolj sunt zona 2 "normal", dar aceste orase
+// anume sunt suficient de apropiate cat sa coste la fel ca zona locala).
+const FLAT_RATE_FEE = 13
+const FLAT_RATE_LOCALITIES = ['bucuresti', 'ploiesti', 'craiova', 'slatina']
+
+// Compara fara diacritice si fara sensibilitate la majuscule (SIRUTA foloseste
+// uneori "ş"/"ţ" cu sedila in loc de "ș"/"ț" cu virgula - normalizam pe ambele).
+// Intervalul Unicode "Combining Diacritical Marks" (U+0300-U+036F) - ce
+// rezulta dupa normalize('NFD') pentru fiecare litera cu diacritice.
+function normalizeLocalitate(str) {
+  return (str || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
+}
+
 // Produsele adaugate in cos inainte de aceasta schimbare nu au inca
 // size/stand/isBaby brute (doar etichetele afisate) - default rezonabil in
 // loc sa pice pagina cuiva care avea deja ceva in cos.
-export function getShippingFeeForItem(item, judetCod) {
+export function getShippingFeeForItem(item, judetCod, localitate) {
+  if (FLAT_RATE_LOCALITIES.includes(normalizeLocalitate(localitate))) return FLAT_RATE_FEE
+
   const tier = JUDET_TIERS[judetCod]
   if (!tier) return 0
 
@@ -46,7 +63,24 @@ export function getShippingFeeForItem(item, judetCod) {
   return HALO_SHIPPING_FEES[tier][stand][size]
 }
 
-export function getCartShippingTotal(items, judetCod) {
+export function getCartShippingTotal(items, judetCod, localitate) {
   if (!judetCod) return null
-  return items.reduce((sum, item) => sum + getShippingFeeForItem(item, judetCod) * item.qty, 0)
+  return items.reduce((sum, item) => sum + getShippingFeeForItem(item, judetCod, localitate) * item.qty, 0)
+}
+
+// Cutie de protectie pentru sticla - doar sticla are nevoie, plexi nu.
+// Cost separat de pretul oglinzii, vizibil doar in cos/checkout, nu si in
+// configurator. "Fara ambalare" la tariful fix de mai sus inseamna ca
+// aceste orase apropiate NU scapa si de costul cutiei - doar transportul e
+// mai ieftin pentru ele, impachetarea sticlei costa la fel oriunde.
+const GLASS_PACKAGING_FEES = { S: 40, M: 50, L: 60, XL: 70 }
+
+export function getGlassPackagingFee(item) {
+  if (item.material !== 'sticla') return 0
+  const size = ['S', 'M', 'L', 'XL'].includes(item.size) ? item.size : 'M'
+  return GLASS_PACKAGING_FEES[size]
+}
+
+export function getCartPackagingTotal(items) {
+  return items.reduce((sum, item) => sum + getGlassPackagingFee(item) * item.qty, 0)
 }
