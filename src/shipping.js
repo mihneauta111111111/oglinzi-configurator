@@ -25,12 +25,13 @@ const HOME_CITY = 'pitesti'
 const NEAR_PITESTI_FLAT_FEE = 20
 
 // Zonele 3-4 (peste ~160km, acolo unde intervine curierul) cresc progresiv
-// cu distanta, marimea si standerul, plafonat astfel incat cel mai departe
-// colt al tarii + marimea cea mai mare + stander = 100 RON, maximul admis
-// (separat de cutia de protectie, care se adauga distinct).
+// cu distanta, marimea si standerul. Tabelul e cel calibrat pe plafonul de
+// 100 RON (cel mai departe colt + marimea cea mai mare + stander), apoi
+// redus cu 20% peste tot - deci maximul real e acum 80 RON. Tariful minim
+// (NEAR_PITESTI_FLAT_FEE) nu a fost redus, a ramas 20 RON.
 const HALO_SHIPPING_FEES = {
-  3: { no: { S: 35, M: 40, L: 45, XL: 50 }, yes: { S: 45, M: 52, L: 58, XL: 65 } },
-  4: { no: { S: 55, M: 62, L: 70, XL: 80 }, yes: { S: 70, M: 80, L: 90, XL: 100 } },
+  3: { no: { S: 28, M: 32, L: 36, XL: 40 }, yes: { S: 36, M: 42, L: 46, XL: 52 } },
+  4: { no: { S: 44, M: 50, L: 56, XL: 64 }, yes: { S: 56, M: 64, L: 72, XL: 80 } },
 }
 
 const BABY_SHIPPING_FEES = { 3: 14, 4: 20 }
