@@ -79,8 +79,8 @@ export default function CartPage() {
     return () => { cancelled = true }
   }, [form.judet])
 
-  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet, form.localitate), [items, form.judet, form.localitate])
-  const packagingCost = useMemo(() => getCartPackagingTotal(items), [items])
+  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet), [items, form.judet])
+  const packagingCost = useMemo(() => getCartPackagingTotal(items, form.judet), [items, form.judet])
   const grandTotal = total + (shippingCost || 0) + packagingCost
 
   async function handleSubmit(e) {
@@ -172,9 +172,9 @@ export default function CartPage() {
                     <span style={{ width: '11px', height: '11px', borderRadius: '50%', background: item.ledHex || '#fff', border: '1px solid rgba(0,0,0,0.15)', display: 'inline-block' }} />
                     LED {item.ledName}{item.dark ? ' · fundal negru' : ''}
                   </div>
-                  {item.material === 'sticla' && (
+                  {item.material === 'sticla' && getGlassPackagingFee(item, form.judet) > 0 && (
                     <div className="text-[12px] text-black/45 mt-1.5 italic">
-                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+{getGlassPackagingFee(item)} RON cutie de protectie, adaugat la total).
+                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+{getGlassPackagingFee(item, form.judet)} RON cutie de protectie, adaugat la total).
                     </div>
                   )}
                 </div>
