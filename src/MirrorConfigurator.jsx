@@ -67,12 +67,13 @@ const BABY_PRICE = 151
 const BABY_SIZE_LABEL = '26 x 15 cm'
 
 const LED_COLORS = [
-  { id: 'warm', name: 'Alb cald', hex: '#FFC98A' },
+  { id: 'warm', name: 'Alb cald', hex: '#F6B93B' },
   { id: 'white', name: 'Alb', hex: '#F2F6FF' },
   { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 36 },
   { id: 'red', name: 'Rosu', hex: '#FF3B3B' },
-  { id: 'blue', name: 'Albastru', hex: '#3B82F6' },
-  { id: 'uv', name: 'UV light', hex: '#8A2BE2' },
+  { id: 'yellow', name: 'Galben', hex: '#FFD23F' },
+  { id: 'blue', name: 'Albastru', hex: '#8EC9F2' },
+  { id: 'uv', name: 'UV light', hex: '#1B2F6B' },
   { id: 'none', name: 'Fara iluminare', hex: '' },
 ]
 
