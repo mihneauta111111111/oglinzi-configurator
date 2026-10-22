@@ -8,11 +8,14 @@ const MATERIALS = [
   { id: 'plexi', name: 'Plexi / Acrilic' },
 ]
 
+// scale = cat de mare apare preview-ul oglinzii fata de M (referinta 1.0),
+// aproximativ proportional cu dimensiunea reala, dar comprimat ca sa nu
+// "sara" vizual pe ecrane mici (vezi zoom-ul aplicat mai jos).
 const SIZES = [
-  { id: 'S', label: '1.0m x 0.5m' },
-  { id: 'M', label: '1.2m x 0.6m' },
-  { id: 'L', label: '1.4m x 0.7m' },
-  { id: 'XL', label: '1.6m x 0.8m' },
+  { id: 'S', label: '1.0m x 0.5m', scale: 0.92 },
+  { id: 'M', label: '1.2m x 0.6m', scale: 1 },
+  { id: 'L', label: '1.4m x 0.7m', scale: 1.08 },
+  { id: 'XL', label: '1.6m x 0.8m', scale: 1.16 },
 ]
 
 // "De perete" = fara stander, prinsa direct pe perete (sistem de prindere
@@ -173,7 +176,7 @@ function MirrorConfigurator() {
       <div aria-hidden style={{ position: 'absolute', top: '6%', left: '50%', transform: 'translateX(-50%)', width: '82%', height: '68%', background: selectedLed.hex ? `radial-gradient(ellipse at center, ${selectedLed.hex}4d, ${selectedLed.hex}1f 42%, rgba(0,0,0,0) 70%)` : 'transparent', filter: 'blur(34px)', pointerEvents: 'none', transition: 'background 0.5s ease' }} />
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-6 pb-16 grid lg:grid-cols-[1fr_420px] gap-10">
       <div className="flex flex-col items-center lg:sticky lg:top-24 lg:self-start pt-6 gap-6 lg:gap-10">
-        <div className="relative" style={{ width: 'min(360px, 100%)', zoom: isBaby ? 0.7 : 1 }}>
+        <div className="relative" style={{ width: 'min(360px, 100%)', zoom: isBaby ? 0.7 : selectedSize.scale }}>
           {/* LED backlight bleeding from behind the mirror */}
           <div style={{ position: 'absolute', inset: '-30px', borderRadius: '72px', filter: 'blur(46px)', opacity: 0.5, backgroundColor: selectedLed.hex || 'transparent', transition: 'background-color 0.5s ease' }} />
 
