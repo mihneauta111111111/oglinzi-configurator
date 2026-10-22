@@ -17,27 +17,39 @@ export const JUDET_TIERS = {
   suceava: 4, timis: 4, tulcea: 4, vaslui: 4,
 }
 
-// Zonele 1-2 (~0-160km, practic raza de ~150km in jurul Pitesti) au un
-// tarif unic de livrare, indiferent de marime/stander/model, si nu se
-// factureaza cutia de protectie pentru sticla (vezi getGlassPackagingFee
-// mai jos) - distanta e suficient de mica cat sa nu fie nevoie de ea.
-const NEAR_PITESTI_FLAT_FEE = 30
+// In Pitesti livrarea e gratuita, iar in zonele 1-2 (~150km in jurul
+// Pitesti) e un tarif unic mic - in ambele cazuri livreaza direct
+// proprietarul, nu curierul, deci nu se factureaza nici cutia de protectie
+// (vezi getGlassPackagingFee mai jos).
+const HOME_CITY = 'pitesti'
+const NEAR_PITESTI_FLAT_FEE = 20
 
-// Zonele 3-4 (peste ~160km) folosesc tabelul variabil pe marime/stander,
-// calibrat pe reperul dat de client: L + stander + Maramures (zona 4) =
-// 180 RON. XL extrapolat cu acelasi ritm de crestere M->L aplicat inca o
-// data (L->XL), ca sa ramana monoton si proportional cu restul tabelului.
+// Zonele 3-4 (peste ~160km, acolo unde intervine curierul) cresc progresiv
+// cu distanta, marimea si standerul, plafonat astfel incat cel mai departe
+// colt al tarii + marimea cea mai mare + stander = 100 RON, maximul admis
+// (separat de cutia de protectie, care se adauga distinct).
 const HALO_SHIPPING_FEES = {
-  3: { no: { S: 38, M: 48, L: 61, XL: 78 }, yes: { S: 65, M: 76, L: 99, XL: 129 } },
-  4: { no: { S: 69, M: 87, L: 111, XL: 142 }, yes: { S: 118, M: 139, L: 180, XL: 233 } },
+  3: { no: { S: 35, M: 40, L: 45, XL: 50 }, yes: { S: 45, M: 52, L: 58, XL: 65 } },
+  4: { no: { S: 55, M: 62, L: 70, XL: 80 }, yes: { S: 70, M: 80, L: 90, XL: 100 } },
 }
 
 const BABY_SHIPPING_FEES = { 3: 14, 4: 20 }
 
+// Compara numele de localitati fara diacritice si fara sensibilitate la
+// majuscule - SIRUTA scrie "Piteşti" cu ş-cedila, nu cu ș-virgula.
+// Intervalul Unicode de mai jos e "Combining Diacritical Marks"
+// (U+0300-U+036F), ce rezulta din normalize('NFD') pentru fiecare litera
+// cu diacritice.
+function normalizeLocalitate(str) {
+  return (str || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim()
+}
+
 // Produsele adaugate in cos inainte de aceasta schimbare nu au inca
 // size/stand/isBaby brute (doar etichetele afisate) - default rezonabil in
 // loc sa pice pagina cuiva care avea deja ceva in cos.
-export function getShippingFeeForItem(item, judetCod) {
+export function getShippingFeeForItem(item, judetCod, localitate) {
+  if (normalizeLocalitate(localitate) === HOME_CITY) return 0
+
   const tier = JUDET_TIERS[judetCod]
   if (!tier) return 0
   if (tier <= 2) return NEAR_PITESTI_FLAT_FEE
@@ -50,23 +62,26 @@ export function getShippingFeeForItem(item, judetCod) {
   return HALO_SHIPPING_FEES[tier][stand][size]
 }
 
-export function getCartShippingTotal(items, judetCod) {
+export function getCartShippingTotal(items, judetCod, localitate) {
   if (!judetCod) return null
-  return items.reduce((sum, item) => sum + getShippingFeeForItem(item, judetCod) * item.qty, 0)
+  return items.reduce((sum, item) => sum + getShippingFeeForItem(item, judetCod, localitate) * item.qty, 0)
 }
 
-// Cutie de protectie pentru sticla - doar sticla are nevoie, plexi nu. Cost
-// separat de pretul oglinzii, vizibil doar in cos/checkout, nu si in
-// configurator. Nu se factureaza in zonele 1-2 (~150km de Pitesti) - vezi
-// NEAR_PITESTI_FLAT_FEE mai sus. Daca judetul nu e inca ales, presupunem
-// varianta "departe" (cost normal) - se recalculeaza corect imediat ce
-// clientul alege judetul.
+// Cutie de protectie, pe marimea oglinzii - doar sticla are nevoie de ea,
+// plexi nu. Cost separat de pretul oglinzii si de livrare, vizibil doar in
+// cos/checkout, nu si in configurator.
+//
+// Nu se factureaza in zonele 1-2 (~150km de Pitesti): acolo livreaza direct
+// proprietarul, nu curierul, deci oglinda nu are nevoie de cutie. Daca
+// judetul nu e inca ales, presupunem varianta "departe" (cost normal) - se
+// recalculeaza corect imediat ce clientul alege judetul.
 const GLASS_PACKAGING_FEES = { S: 40, M: 50, L: 60, XL: 70 }
 
 export function getGlassPackagingFee(item, judetCod) {
   if (item.material !== 'sticla') return 0
+
   const tier = JUDET_TIERS[judetCod]
-  if (tier && tier <= 2) return 0
+  if (tier != null && tier <= 2) return 0
 
   const size = ['S', 'M', 'L', 'XL'].includes(item.size) ? item.size : 'M'
   return GLASS_PACKAGING_FEES[size]

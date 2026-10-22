@@ -79,7 +79,7 @@ export default function CartPage() {
     return () => { cancelled = true }
   }, [form.judet])
 
-  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet), [items, form.judet])
+  const shippingCost = useMemo(() => getCartShippingTotal(items, form.judet, form.localitate), [items, form.judet, form.localitate])
   const packagingCost = useMemo(() => getCartPackagingTotal(items, form.judet), [items, form.judet])
   const grandTotal = total + (shippingCost || 0) + packagingCost
 
