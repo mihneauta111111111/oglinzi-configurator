@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useCart } from './CartContext'
+import { useCart, MAX_CART_MIRRORS } from './CartContext'
 import MirrorPreview from './MirrorPreview'
 
 const MATERIALS = [
@@ -131,7 +131,8 @@ function MirrorConfigurator() {
   const [added, setAdded] = useState(false)
   const [exclVat, setExclVat] = useState(false)
 
-  const { addItem } = useCart()
+  const { addItem, count: cartCount } = useCart()
+  const cartFull = cartCount >= MAX_CART_MIRRORS
   const navigate = useNavigate()
 
   const selectedMaterial = MATERIALS.find((m) => m.id === material)
@@ -401,10 +402,20 @@ function MirrorConfigurator() {
               <button type="button" onClick={() => setExclVat(true)} className={'rounded-full px-2.5 py-1 transition-colors ' + (exclVat ? 'bg-[#17181A] text-white' : 'text-black/45')}>Fara TVA</button>
             </div>
           </div>
-          <button type="button" onClick={handleAddToCart} className="cta-glow w-full bg-[#17181A] text-white rounded-full py-3.5 text-[14px] font-medium">
-            {added ? 'Adaugat · vezi cosul' : 'Adauga in cos'}
+          <button
+            type="button"
+            onClick={cartFull ? () => navigate('/cos') : handleAddToCart}
+            className={'cta-glow w-full rounded-full py-3.5 text-[14px] font-medium ' + (cartFull ? 'bg-black/25 text-white' : 'bg-[#17181A] text-white')}
+          >
+            {cartFull ? 'Cosul e plin · vezi cosul' : (added ? 'Adaugat · vezi cosul' : 'Adauga in cos')}
           </button>
-          <p className="text-[11px] text-black/45 text-center pt-3">Plata securizata &nbsp;·&nbsp; Livrare in toata tara &nbsp;·&nbsp; Fara plata acum</p>
+          {cartFull ? (
+            <p className="text-[11px] text-black/45 text-center pt-3">
+              Maximum {MAX_CART_MIRRORS} oglinzi pe comanda. Pentru mai multe, suna-ne la 0728 085 494.
+            </p>
+          ) : (
+            <p className="text-[11px] text-black/45 text-center pt-3">Plata securizata &nbsp;·&nbsp; Livrare in toata tara &nbsp;·&nbsp; Fara plata acum</p>
+          )}
         </div>
       </div>
       </div>

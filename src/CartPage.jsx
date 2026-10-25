@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useCart } from './CartContext'
+import { useCart, MAX_CART_MIRRORS } from './CartContext'
 import MirrorPreview from './MirrorPreview'
 import SearchableSelect from './SearchableSelect'
 import { getCartShippingTotal, getCartPackagingTotal, getGlassPackagingFee } from './shipping'
@@ -36,13 +36,20 @@ function FieldLabel({ children, required }) {
   )
 }
 
-function QtyStepper({ qty, onDec, onInc }) {
+function QtyStepper({ qty, onDec, onInc, canInc = true }) {
   const btn = 'w-8 h-8 flex items-center justify-center text-[16px] leading-none text-black/60 hover:text-black transition-colors'
   return (
     <div className="inline-flex items-center rounded-full border border-black/12">
       <button type="button" onClick={onDec} className={btn} aria-label="Scade">-</button>
       <span className="w-6 text-center text-[13px] font-medium">{qty}</span>
-      <button type="button" onClick={onInc} className={btn} aria-label="Adauga">+</button>
+      <button
+        type="button"
+        onClick={onInc}
+        disabled={!canInc}
+        title={canInc ? undefined : `Maximum ${MAX_CART_MIRRORS} oglinzi pe comanda`}
+        className={btn + (canInc ? '' : ' opacity-30 cursor-not-allowed')}
+        aria-label="Adauga"
+      >+</button>
     </div>
   )
 }
@@ -179,7 +186,7 @@ export default function CartPage() {
                   </div>
                   {item.material === 'sticla' && getGlassPackagingFee(item, form.judet) > 0 && (
                     <div className="text-[12px] text-black/45 mt-1.5 italic">
-                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+{getGlassPackagingFee(item, form.judet)} RON cutie de protectie, adaugat la total).
+                      📦 Sticla nu glumeste la transport - o infofolim ca pe un ou de Paste, nu vrem cioburi la usa ta (+{getGlassPackagingFee(item, form.judet) * item.qty} RON cutie de protectie, adaugat la total).
                     </div>
                   )}
                 </div>
@@ -188,14 +195,21 @@ export default function CartPage() {
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" /></svg>
                   </button>
                   <div className="font-display text-[17px] font-medium whitespace-nowrap">{item.price * item.qty} <span className="text-[12px] text-black/45 font-sans">RON</span></div>
-                  <QtyStepper qty={item.qty} onDec={() => updateQty(item.id, item.qty - 1)} onInc={() => updateQty(item.id, item.qty + 1)} />
+                  <QtyStepper qty={item.qty} canInc={count < MAX_CART_MIRRORS} onDec={() => updateQty(item.id, item.qty - 1)} onInc={() => updateQty(item.id, item.qty + 1)} />
                 </div>
               </div>
             ))}
           </div>
-          <button type="button" onClick={goConfigure} className="inline-flex items-center gap-1.5 text-[13px] text-[#17181A]/60 hover:text-[#17181A] transition-colors mt-4">
-            <span style={{ fontSize: '16px', lineHeight: 1 }}>+</span> Adauga inca o oglinda
-          </button>
+          {count < MAX_CART_MIRRORS ? (
+            <button type="button" onClick={goConfigure} className="inline-flex items-center gap-1.5 text-[13px] text-[#17181A]/60 hover:text-[#17181A] transition-colors mt-4">
+              <span style={{ fontSize: '16px', lineHeight: 1 }}>+</span> Adauga inca o oglinda
+            </button>
+          ) : (
+            <p className="text-[13px] text-black/50 mt-4">
+              Ai atins maximul de {MAX_CART_MIRRORS} oglinzi pe comanda. Pentru o comanda mai mare,
+              suna-ne la <strong className="text-[#17181A]">0728 085 494</strong> si o facem impreuna.
+            </p>
+          )}
         </div>
 
         {/* Summary + delivery */}
