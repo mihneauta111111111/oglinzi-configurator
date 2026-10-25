@@ -79,7 +79,10 @@ export function Hero() {
             <a href="#configurator" className="cta-glow inline-block bg-white text-[#17181A] rounded-full px-7 py-3.5 text-[14px] font-medium">Configureaza-ti oglinda</a>
             <a href="#galerie" className="inline-block rounded-full px-7 py-3.5 text-[14px] font-medium text-white border border-white/40 hover:bg-white/10 transition-colors">Vezi galeria</a>
           </div>
-          <p className="text-white/55 text-[12.5px] tracking-wide">de la 799 lei &nbsp;·&nbsp; Livrare 5-10 zile &nbsp;·&nbsp; Fabricat in Romania</p>
+          {/* Pretul afisat trebuie sa fie cu TVA inclus si sa corespunda unui
+              produs chiar cumparabil la suma aia - 151 lei e baby.halo, de
+              aceea e numit explicit, nu lasat sa para pretul oglinzii mari. */}
+          <p className="text-white/55 text-[12.5px] tracking-wide">de la 151 lei (baby.halo) &nbsp;·&nbsp; Livrare 5-10 zile &nbsp;·&nbsp; Fabricat in Romania</p>
         </Reveal>
       </div>
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 text-white/45">
@@ -228,7 +231,7 @@ export function StickyCta() {
     >
       <div style={{ lineHeight: 1.15 }}>
         <div style={{ fontSize: '11px', color: 'rgba(23,24,26,0.5)' }}>Oglinda personalizata</div>
-        <div className="font-display" style={{ fontSize: '17px', fontWeight: 500 }}>de la 799 lei</div>
+        <div className="font-display" style={{ fontSize: '17px', fontWeight: 500 }}>de la 151 lei <span style={{ fontSize: '11px', fontWeight: 400, color: 'rgba(23,24,26,0.5)' }}>(baby.halo)</span></div>
       </div>
       <a href="#configurator" className="cta-glow" style={{ background: '#17181A', color: '#fff', borderRadius: '999px', padding: '12px 22px', fontSize: '14px', fontWeight: 500, whiteSpace: 'nowrap' }}>Configureaza</a>
     </div>
