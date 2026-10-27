@@ -157,9 +157,10 @@ function MirrorConfigurator() {
   // 2-5 MB, iar in base64 creste cu inca ~37% - peste limita de ~4 MB a
   // localStorage-ului, unde salvarea cosului esueaza in tacere si clientul
   // isi pierde cosul la primul refresh (verificat pe site-ul live).
-  // 1000px e mai mult decat suficient: poza apare ca un cerc mic in postare,
-  // deci cativa centimetri pe oglinda fizica.
-  const AVATAR_MAX_PX = 1000
+  // Poza apare ca un cerc de 11.7% din latimea oglinzii - intre 5.8 cm (S)
+  // si 9.3 cm (XL). 1200px acopera 300 DPI chiar si pe XL (ar fi nevoie de
+  // 1102px), cu o marja de siguranta daca tipografia cere standardul ala.
+  const AVATAR_MAX_PX = 1200
 
   function handleAvatar(e) {
     const file = e.target.files[0]
