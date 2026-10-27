@@ -153,12 +153,44 @@ function MirrorConfigurator() {
   const sizeLabel = isBaby ? BABY_SIZE_LABEL : selectedSize.label
   const modelName = isBaby ? 'baby.halo' : 'halo'
 
+  // Poza se micsoreaza inainte de a intra in cos. O poza de telefon are
+  // 2-5 MB, iar in base64 creste cu inca ~37% - peste limita de ~4 MB a
+  // localStorage-ului, unde salvarea cosului esueaza in tacere si clientul
+  // isi pierde cosul la primul refresh (verificat pe site-ul live).
+  // 1000px e mai mult decat suficient: poza apare ca un cerc mic in postare,
+  // deci cativa centimetri pe oglinda fizica.
+  const AVATAR_MAX_PX = 1000
+
   function handleAvatar(e) {
     const file = e.target.files[0]
     if (!file) return
-    // Store as data URL so the avatar survives in the cart / localStorage
     const reader = new FileReader()
-    reader.onload = () => setAvatar(reader.result)
+    reader.onload = () => {
+      const original = reader.result
+      const img = new Image()
+      // Daca micsorarea nu reuseste din orice motiv, folosim poza originala -
+      // mai bine un cos greu decat un client fara poza.
+      img.onerror = () => setAvatar(original)
+      img.onload = () => {
+        try {
+          const scale = Math.min(1, AVATAR_MAX_PX / Math.max(img.width, img.height))
+          if (scale === 1 && original.length < 1_000_000) {
+            setAvatar(original)
+            return
+          }
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.round(img.width * scale)
+          canvas.height = Math.round(img.height * scale)
+          const ctx = canvas.getContext('2d')
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+          const redus = canvas.toDataURL('image/jpeg', 0.9)
+          setAvatar(redus.length < original.length ? redus : original)
+        } catch {
+          setAvatar(original)
+        }
+      }
+      img.src = original
+    }
     reader.readAsDataURL(file)
   }
 
