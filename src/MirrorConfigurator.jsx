@@ -121,6 +121,7 @@ function MirrorConfigurator() {
   const [verified, setVerified] = useState(true)
   const [dark, setDark] = useState(false)
   const [location, setLocation] = useState('orasul tau')
+  const [showLocation, setShowLocation] = useState(true)
   const [likes, setLikes] = useState('12.4K')
   const [comments, setComments] = useState('348')
   const [reposts, setReposts] = useState('92')
@@ -213,7 +214,10 @@ function MirrorConfigurator() {
       ledHex: selectedLed.hex,
       aspectRatio: isBaby ? BABY_ASPECT_RATIO : HALO_ASPECT_RATIO,
       dark,
-      username, location, verified, likes, comments, reposts, shares, caption, hashtags,
+      username, verified, likes, comments, reposts, shares, caption, hashtags,
+      // Daca butonul de locatie e stins, nu trimitem nimic - ce vede
+      // clientul pe ecran e exact ce ajunge pe comanda.
+      location: showLocation ? location : '',
       avatar: avatar || '',
     })
     setAdded(true)
@@ -236,7 +240,7 @@ function MirrorConfigurator() {
             verified={verified}
             dark={dark}
             avatar={avatar}
-            location={location}
+            location={showLocation ? location : ''}
             likes={likes}
             comments={comments}
             reposts={reposts}
@@ -369,15 +373,27 @@ function MirrorConfigurator() {
                 ))}
               </div>
             )}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 flex-wrap">
               <Toggle checked={verified} onChange={setVerified} label="Verificat" />
               <Toggle checked={dark} onChange={setDark} label="Fundal negru" />
+              <Toggle checked={showLocation} onChange={setShowLocation} label="Locatie" />
             </div>
           </div>
           {!isBaby && (
             <div className="text-[11px] text-black/45 mt-2">
               {selectedLed.name}{selectedLed.extra ? ` · +${selectedLed.extra} RON` : ''}
             </div>
+          )}
+          {/* Casuta apare chiar sub buton, nu ascunsa in sectiunea pliata -
+              altfel clientul porneste locatia si nu are unde sa o scrie. */}
+          {showLocation && (
+            <input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="ex: Bucuresti, Romania"
+              aria-label="Locatia afisata pe oglinda"
+              className="w-full rounded-lg border border-black/10 px-3 py-2 text-[13px] mt-3 focus:outline-none focus:border-[#17181A]"
+            />
           )}
         </div>
 
@@ -407,10 +423,9 @@ function MirrorConfigurator() {
                 </div>
                 <p style={{ fontSize: '10.5px', color: 'rgba(0,0,0,0.4)', marginTop: '5px' }}>Poza iese mai clara daca nu folosesti o captura de ecran (screenshot).</p>
               </label>
-              <div className="grid grid-cols-2 gap-2">
-                <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" className="rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
-                <input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="locatie" className="rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
-              </div>
+              {/* Locatia si-a primit propria casuta, langa butonul ei de mai
+                  sus - aici ramane doar username-ul, pe toata latimea. */}
+              <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder="username" className="w-full rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
               <div className="grid grid-cols-2 gap-2">
                 <input value={likes} onChange={(e) => setLikes(e.target.value)} placeholder="like-uri" className="rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
                 <input value={comments} onChange={(e) => setComments(e.target.value)} placeholder="comentarii" className="rounded-lg border border-black/10 px-3 py-2 text-[13px] focus:outline-none focus:border-[#17181A]" />
