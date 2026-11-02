@@ -59,6 +59,10 @@ export function Hero() {
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src="/hero.mp4"
+        // Browserele din aplicatii (TikTok mai ales) pot bloca pornirea
+        // automata a videoului. Fara poster, hero-ul ramanea un dreptunghi
+        // negru; asa se vede un cadru din clip, si pagina arata intentionat.
+        poster="/hero-poster.jpg"
         autoPlay
         muted
         loop
