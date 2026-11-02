@@ -107,3 +107,19 @@ section[id] {
     transition: none !important;
   }
 }
+/* Inaltimea hero-ului in browserele din aplicatii (TikTok, Instagram, Facebook).
+   100vh inseamna ecranul INTREG al telefonului, nu cat se vede efectiv: bara
+   de sus si cea de jos ale aplicatiei stau peste pagina. Cum continutul
+   hero-ului e lipit de jos, in TikTok - care are bara de jos inalta - butonul
+   "Vezi galeria", pretul si bara fixa de "Configureaza" ajungeau sub ea.
+   100dvh e inaltimea chiar vizibila; 100vh ramane ca rezerva pentru
+   browserele vechi, care nu cunosc dvh. */
+#acasa {
+  height: 100vh;
+}
+
+@supports (height: 100dvh) {
+  #acasa {
+    height: 100dvh;
+  }
+}

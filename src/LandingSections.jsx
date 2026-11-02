@@ -54,7 +54,7 @@ export function Hero() {
     if (videoRef.current) videoRef.current.muted = true
   }, [])
   return (
-    <section id="acasa" className="relative w-full h-screen overflow-hidden bg-[#0a0a0a]">
+    <section id="acasa" className="relative w-full overflow-hidden bg-[#0a0a0a]">
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
@@ -227,7 +227,9 @@ export function StickyCta() {
   return (
     <div
       className="md:hidden"
-      style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, background: 'rgba(236,238,240,0.95)', backdropFilter: 'blur(10px)', borderTop: '1px solid rgba(23,24,26,0.1)', padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}
+      // Marginea de jos urca bara peste zona de gesturi a telefonului, ca sa
+      // nu ajunga sub ea in browserele din aplicatii.
+      style={{ position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 40, background: 'rgba(236,238,240,0.95)', backdropFilter: 'blur(10px)', borderTop: '1px solid rgba(23,24,26,0.1)', padding: '10px 16px calc(10px + env(safe-area-inset-bottom, 0px))', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}
     >
       <div style={{ lineHeight: 1.15 }}>
         <div style={{ fontSize: '11px', color: 'rgba(23,24,26,0.5)' }}>Oglinda personalizata</div>
