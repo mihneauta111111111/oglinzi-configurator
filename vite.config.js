@@ -14,13 +14,19 @@ import { browserslistToTargets } from 'lightningcss'
 //
 // Cu tintele de mai jos, lightningcss converteste oklab/oklch in culori
 // clasice la compilare, iar esbuild coboara sintaxa JS moderna. Costa ~3 KB.
+// Tinte deliberat vechi. Masurat pe CSS-ul real: fata de Chrome 90 nu mai
+// scade nimic (oklab e deja eliminat acolo), costa ~7 KB in plus si acopera
+// si telefoane vechi care nu au legatura cu TikTok. Mai jos de atat nu are
+// rost: @layer si @property nu se pot converti deloc, iar Tailwind 4 isi
+// pune tot CSS-ul in @layer - un browser care nu-l intelege ar ignora tot,
+// nu doar cateva culori.
 const BROWSERE = [
-  'chrome >= 90',
-  'safari >= 14',
-  'ios_saf >= 14',
-  'firefox >= 90',
-  'samsung >= 14',
-  'android >= 90',
+  'chrome >= 70',
+  'safari >= 12',
+  'ios_saf >= 12',
+  'firefox >= 68',
+  'samsung >= 10',
+  'android >= 70',
 ].join(', ')
 
 export default defineConfig({
@@ -31,6 +37,6 @@ export default defineConfig({
   },
   build: {
     cssMinify: 'lightningcss',
-    target: ['es2020', 'chrome90', 'safari14'],
+    target: ['es2019', 'chrome70', 'safari12'],
   },
 })
