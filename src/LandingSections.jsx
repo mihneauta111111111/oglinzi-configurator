@@ -49,25 +49,77 @@ function Eyebrow({ children, tone = 'dark', center = true }) {
 
 export function Hero() {
   const videoRef = useRef(null)
+
+  // Atributul autoplay singur nu e de ajuns in browserele din aplicatii
+  // (TikTok, Facebook, Messenger): ele il ignora des si lasa clipul oprit la
+  // primul cadru. Pornirea trebuie ceruta din JS, repetat, pentru ca momentul
+  // in care motorul accepta cererea variaza - uneori la "canplay", uneori abia
+  // dupa prima atingere a utilizatorului, care conteaza ca gest si deblocheaza
+  // redarea. De aceea incercam la fiecare ocazie pana cand chiar merge.
   useEffect(() => {
-    // Force muted so browsers allow autoplay
-    if (videoRef.current) videoRef.current.muted = true
+    const v = videoRef.current
+    if (!v) return
+
+    // Toate trei: unele motoare se uita la proprietate, altele la atribut, iar
+    // un volum nenul il face "cu sonor" chiar si cand e pe mut.
+    v.muted = true
+    v.defaultMuted = true
+    v.volume = 0
+
+    let oprit = false
+    const porneste = () => {
+      if (oprit || !v.paused) return
+      // play() returneaza o promisiune care e respinsa cand pornirea e
+      // blocata. Respingerea trebuie prinsa, altfel apare eroare in consola.
+      const p = v.play()
+      if (p && typeof p.catch === 'function') p.catch(() => {})
+    }
+
+    porneste()
+
+    const peVideo = ['loadeddata', 'loadedmetadata', 'canplay', 'canplaythrough']
+    peVideo.forEach((e) => v.addEventListener(e, porneste))
+
+    // Prima interactiune de orice fel pe pagina: in webview-urile care cer un
+    // gest, asta e momentul in care play() reuseste.
+    const peDocument = ['touchstart', 'pointerdown', 'click', 'keydown', 'scroll']
+    peDocument.forEach((e) => document.addEventListener(e, porneste, { passive: true }))
+
+    // Cand pagina se deschide dintr-o alta aplicatie, e des pornita in fundal
+    // si redarea e refuzata pana devine vizibila.
+    document.addEventListener('visibilitychange', porneste)
+    window.addEventListener('focus', porneste)
+
+    return () => {
+      oprit = true
+      peVideo.forEach((e) => v.removeEventListener(e, porneste))
+      peDocument.forEach((e) => document.removeEventListener(e, porneste))
+      document.removeEventListener('visibilitychange', porneste)
+      window.removeEventListener('focus', porneste)
+    }
   }, [])
+
   return (
     <section id="acasa" className="relative w-full overflow-hidden bg-[#0a0a0a]">
       <video
         ref={videoRef}
         className="absolute inset-0 w-full h-full object-cover"
         src="/hero.mp4"
-        // Browserele din aplicatii (TikTok mai ales) pot bloca pornirea
-        // automata a videoului. Fara poster, hero-ul ramanea un dreptunghi
-        // negru; asa se vede un cadru din clip, si pagina arata intentionat.
-        poster="/hero-poster.jpg"
         autoPlay
         muted
         loop
         playsInline
+        /* playsinline minuscul si webkit-playsinline sunt pentru iOS vechi,
+           care fara ele deschide clipul pe tot ecranul in loc sa il redea in
+           pagina - iar un clip care cere ecran complet nu porneste singur. */
+        playsinline=""
+        webkit-playsinline="true"
         preload="auto"
+        controls={false}
+        disablePictureInPicture
+        disableRemotePlayback
+        aria-hidden="true"
+        tabIndex={-1}
         style={{ pointerEvents: 'none' }}
       />
       <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, rgba(10,11,13,0.35) 0%, rgba(10,11,13,0.05) 38%, rgba(10,11,13,0.7) 100%)' }} />
