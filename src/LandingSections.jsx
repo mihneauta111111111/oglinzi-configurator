@@ -50,12 +50,19 @@ function Eyebrow({ children, tone = 'dark', center = true }) {
 export function Hero() {
   const videoRef = useRef(null)
 
-  // Atributul autoplay singur nu e de ajuns in browserele din aplicatii
-  // (TikTok, Facebook, Messenger): ele il ignora des si lasa clipul oprit la
-  // primul cadru. Pornirea trebuie ceruta din JS, repetat, pentru ca momentul
-  // in care motorul accepta cererea variaza - uneori la "canplay", uneori abia
-  // dupa prima atingere a utilizatorului, care conteaza ca gest si deblocheaza
-  // redarea. De aceea incercam la fiecare ocazie pana cand chiar merge.
+  // Pornirea clipului in browserele din aplicatii e o negociere, nu o comanda.
+  //
+  // Atributul autoplay singur e ignorat des, deci pornirea trebuie ceruta si
+  // din JS. Dar unele webview-uri - cel din TikTok e unul - nu respecta redarea
+  // in pagina si deschid clipul pe tot ecranul la FIECARE apel play(). Daca in
+  // acel moment mai ceri pornirea, intri intr-un ciclu: ecran complet, iesire,
+  // iar ecran complet, si pagina nu mai poate fi derulata.
+  //
+  // De aceea aici cererile de pornire sunt strict limitate: la evenimentele de
+  // "gata" ale clipului, si o singura data la prima atingere. Nimic legat de
+  // derulare. Iar daca observam fie si o singura trecere pe tot ecranul, ieism
+  // din ea si nu mai cerem niciodata pornirea - hero-ul ramane pe un cadru din
+  // clip, ceea ce e mult de preferat unei pagini care nu se poate derula.
   useEffect(() => {
     const v = videoRef.current
     if (!v) return
@@ -66,36 +73,100 @@ export function Hero() {
     v.defaultMuted = true
     v.volume = 0
 
-    let oprit = false
-    const porneste = () => {
-      if (oprit || !v.paused) return
-      // play() returneaza o promisiune care e respinsa cand pornirea e
-      // blocata. Respingerea trebuie prinsa, altfel apare eroare in consola.
-      const p = v.play()
-      if (p && typeof p.catch === 'function') p.catch(() => {})
+    let renunt = false // am vazut ecran complet: nu mai cerem pornirea
+    let mergeInline = false // a rulat cel putin o data cum trebuie, in pagina
+    let cereri = 0
+    const MAX_CERERI = 4
+
+    const peEcranComplet = () =>
+      v.webkitDisplayingFullscreen === true ||
+      document.fullscreenElement === v ||
+      document.webkitFullscreenElement === v
+
+    const iesiSiRenunta = () => {
+      if (renunt) return
+      renunt = true
+      desprindeTot()
+      // Fiecare motor isi are propria ieire; le incercam pe toate si ignoram
+      // ce arunca, fiindca majoritatea refuza apelul cand nu e cazul.
+      const incearca = [
+        () => v.webkitExitFullscreen(),
+        () => v.webkitSetPresentationMode('inline'),
+        () => document.exitFullscreen(),
+        () => document.webkitExitFullscreen(),
+      ]
+      for (const f of incearca) { try { f() } catch { /* nu e disponibil aici */ } }
+      // Oprim clipul: lasat sa ruleze, unele motoare il readuc pe tot ecranul.
+      try { v.pause() } catch { /* ignorat */ }
     }
+
+    const verificaEcranComplet = () => { if (peEcranComplet()) iesiSiRenunta() }
+
+    const porneste = () => {
+      if (renunt || !v.paused || cereri >= MAX_CERERI) return
+      cereri++
+      const p = v.play()
+      // play() returneaza o promisiune respinsa cand pornirea e blocata.
+      // Trebuie prinsa, altfel apare o eroare necontrolata in consola.
+      if (p && typeof p.catch === 'function') p.catch(() => {})
+      // Unele webview-uri trec pe tot ecranul fara sa anunte printr-un
+      // eveniment, asa ca verificam si direct, la scurt timp dupa cerere.
+      setTimeout(verificaEcranComplet, 400)
+    }
+
+    const laRedare = () => {
+      if (peEcranComplet()) return iesiSiRenunta()
+      // A pornit in pagina, cum trebuie. Nu mai avem nevoie de nicio cerere.
+      mergeInline = true
+      desprindeDeclansatoare()
+    }
+
+    const laGest = () => { desprindeGesturi(); porneste() }
+
+    const laVizibilitate = () => {
+      // Doar reluam ceva ce a mers deja in pagina; nu pornim niciodata de aici
+      // ceva neverificat, ca sa nu provocam noi trecerea pe tot ecranul.
+      if (renunt || !mergeInline || document.visibilityState !== 'visible') return
+      cereri = 0
+      porneste()
+    }
+
+    const EV_GATA = ['loadeddata', 'loadedmetadata', 'canplay', 'canplaythrough']
+    const EV_GEST = ['touchstart', 'pointerdown', 'click']
+    const EV_FULL = ['webkitbeginfullscreen', 'webkitpresentationmodechanged', 'fullscreenchange', 'webkitfullscreenchange']
+
+    function desprindeGesturi() {
+      EV_GEST.forEach((e) => document.removeEventListener(e, laGest))
+    }
+    function desprindeDeclansatoare() {
+      EV_GATA.forEach((e) => v.removeEventListener(e, porneste))
+      desprindeGesturi()
+    }
+    function desprindeTot() {
+      desprindeDeclansatoare()
+      document.removeEventListener('visibilitychange', laVizibilitate)
+    }
+
+    EV_GATA.forEach((e) => v.addEventListener(e, porneste))
+    // O singura data, la prima atingere: in webview-urile care cer un gest al
+    // utilizatorului, acela e momentul in care play() reuseste. Derularea nu
+    // declanseaza nimic, tocmai ca sa nu se repete trecerea pe tot ecranul.
+    EV_GEST.forEach((e) => document.addEventListener(e, laGest, { passive: true, once: true }))
+    EV_FULL.forEach((e) => v.addEventListener(e, verificaEcranComplet))
+    document.addEventListener('fullscreenchange', verificaEcranComplet)
+    document.addEventListener('webkitfullscreenchange', verificaEcranComplet)
+    v.addEventListener('playing', laRedare)
+    document.addEventListener('visibilitychange', laVizibilitate)
 
     porneste()
 
-    const peVideo = ['loadeddata', 'loadedmetadata', 'canplay', 'canplaythrough']
-    peVideo.forEach((e) => v.addEventListener(e, porneste))
-
-    // Prima interactiune de orice fel pe pagina: in webview-urile care cer un
-    // gest, asta e momentul in care play() reuseste.
-    const peDocument = ['touchstart', 'pointerdown', 'click', 'keydown', 'scroll']
-    peDocument.forEach((e) => document.addEventListener(e, porneste, { passive: true }))
-
-    // Cand pagina se deschide dintr-o alta aplicatie, e des pornita in fundal
-    // si redarea e refuzata pana devine vizibila.
-    document.addEventListener('visibilitychange', porneste)
-    window.addEventListener('focus', porneste)
-
     return () => {
-      oprit = true
-      peVideo.forEach((e) => v.removeEventListener(e, porneste))
-      peDocument.forEach((e) => document.removeEventListener(e, porneste))
-      document.removeEventListener('visibilitychange', porneste)
-      window.removeEventListener('focus', porneste)
+      renunt = true
+      desprindeTot()
+      EV_FULL.forEach((e) => v.removeEventListener(e, verificaEcranComplet))
+      document.removeEventListener('fullscreenchange', verificaEcranComplet)
+      document.removeEventListener('webkitfullscreenchange', verificaEcranComplet)
+      v.removeEventListener('playing', laRedare)
     }
   }, [])
 
@@ -111,9 +182,16 @@ export function Hero() {
         playsInline
         /* playsinline minuscul si webkit-playsinline sunt pentru iOS vechi,
            care fara ele deschide clipul pe tot ecranul in loc sa il redea in
-           pagina - iar un clip care cere ecran complet nu porneste singur. */
+           pagina. Cele cu x5- si t7- cer acelasi lucru motoarelor de webview
+           folosite de aplicatiile construite in China - printre care TikTok -
+           care au propriile atribute si nu se uita la playsinline. */
         playsinline=""
         webkit-playsinline="true"
+        x5-playsinline="true"
+        x5-video-player-type="h5-page"
+        x5-video-player-fullscreen="false"
+        x5-video-ignore-metadata="true"
+        t7-video-player-type="inline"
         preload="auto"
         controls={false}
         disablePictureInPicture
