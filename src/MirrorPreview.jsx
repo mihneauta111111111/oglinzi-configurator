@@ -60,6 +60,11 @@ export default function MirrorPreview({
   const postBodyBorder = dark ? '1px solid rgba(255,255,255,0.08)' : '1px solid rgba(0,0,0,0.05)'
   const avatarBg = dark ? '#262626' : '#efefef'
   const avatarText = dark ? '#dddddd' : '#333333'
+  // Inel in jurul pozei de profil. Fara el, o poza cu fundal alb se pierde in
+  // cardul alb si nu se mai vede unde se termina - iar pe oglinda tiparita nu
+  // ai cum sa o delimitezi ulterior. Culoarea urmeaza fundalul cardului, ca
+  // inelul sa se vada si pe alb si pe negru.
+  const avatarRing = dark ? 'rgba(255,255,255,0.3)' : 'rgba(0,0,0,0.22)'
 
   const glow = ledHex ? '0 0 44px 2px ' + ledHex + '55, ' : ''
 
@@ -68,7 +73,13 @@ export default function MirrorPreview({
       {/* Post header (avatar + username + menu) */}
       <div style={{ padding: '16px 18px 10px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '11px', minWidth: 0 }}>
-          <div style={{ width: '42px', height: '42px', borderRadius: '50%', overflow: 'hidden', background: avatarBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          {/* Inelul e pus pe interior (box-sizing: border-box), ca poza sa
+              ocupe exact acelasi loc ca inainte si inelul sa o taie curat in
+              cerc, nu sa creasca avatarul. Grosimea e un numar intreg pentru
+              ca browserele coboara fractiunile la intregul de dedesubt - 1.5px
+              se desena ca 1px, adica vreun milimetru si jumatate pe oglinda
+              tiparita, prea putin ca sa delimiteze ceva. */}
+          <div style={{ width: '42px', height: '42px', boxSizing: 'border-box', border: '2px solid ' + avatarRing, borderRadius: '50%', overflow: 'hidden', background: avatarBg, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
             {avatar
               ? <img src={avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
               : <span style={{ fontSize: '13px', fontWeight: '700', color: avatarText, textTransform: 'uppercase' }}>{username.slice(0, 2)}</span>}

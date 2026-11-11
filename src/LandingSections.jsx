@@ -30,7 +30,7 @@ const FAQ = [
   { q: 'De ce HALO nu e doar o oglinda?', a: 'Pentru ca brandul tau merita mai mult decat un perete gol. Cel mai bun marketing este atunci cand clientii iti promoveaza afacerea din proprie initiativa.' },
   { q: 'Cat dureaza pana primesc oglinda?', a: 'In general 5-10 zile lucratoare de la confirmarea comenzii, in functie de configuratie si de perioada.' },
   { q: 'Pot pune propria poza si username?', a: 'Da. Configuratorul iti arata in timp real cum va arata oglinda ta, cu poza, username, bifa de verificat si statistici.' },
-  { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+36 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
+  { q: 'Ce culori de LED sunt disponibile?', a: 'Alb cald, alb, RGB cu telecomanda (+25 RON), rosu, albastru sau UV light. Poti alege si varianta fara iluminare, cu preturi separate. Banda LED se aprinde direct in priza si lumineaza conturul oglinzii.' },
   { q: 'Livrati in toata tara?', a: 'Da, livram oriunde in Romania. Costul exact de livrare se confirma odata cu oferta.' },
   { q: 'Cum se monteaza oglinda pe perete?', a: 'Oglinda este livrata cu un sistem de prindere simplu, care se fixeaza pe perete cu suruburi, iar produsul se monteaza prin glisare.' },
   { q: 'Iti doresti un design special?', a: 'Pentru un model cu o altfel de personalizare, contacteaza-ne pe Instagram sau TikTok la @halo.mirrors ori pe WhatsApp la 0728 085 494.' },

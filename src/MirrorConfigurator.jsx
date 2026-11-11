@@ -81,7 +81,7 @@ const BABY_ASPECT_RATIO = '15 / 26'
 const LED_COLORS = [
   { id: 'warm', name: 'Alb cald', hex: '#F6B93B' },
   { id: 'white', name: 'Alb', hex: '#F2F6FF' },
-  { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 36 },
+  { id: 'rgb', name: 'RGB + telecomanda', hex: '#B266FF', swatch: 'conic-gradient(from 0deg, #FF3B3B, #FFC93B, #3BFF6E, #3BC9FF, #B266FF, #FF3B3B)', extra: 25 },
   { id: 'red', name: 'Rosu', hex: '#FF3B3B' },
   { id: 'yellow', name: 'Galben', hex: '#FFD23F' },
   { id: 'blue', name: 'Albastru', hex: '#8EC9F2' },
@@ -413,7 +413,9 @@ function MirrorConfigurator() {
                 <div style={{ marginTop: '6px', border: '1.5px dashed rgba(0,0,0,0.2)', borderRadius: '10px', padding: '10px', textAlign: 'center', backgroundColor: avatar ? 'transparent' : 'rgba(0,0,0,0.02)' }}>
                   {avatar ? (
                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                      <img src={avatar} alt="preview" style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
+                      {/* Acelasi inel ca pe oglinda: o poza cu fundal alb nu
+                          s-ar vedea deloc pe panoul alb al configuratorului. */}
+                      <img src={avatar} alt="preview" style={{ width: '32px', height: '32px', boxSizing: 'border-box', border: '2px solid rgba(0,0,0,0.22)', borderRadius: '50%', objectFit: 'cover' }} />
                       <span style={{ fontSize: '12px', color: 'rgba(0,0,0,0.5)' }}>Poza selectata</span>
                     </div>
                   ) : (
